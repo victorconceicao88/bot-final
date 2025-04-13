@@ -2437,46 +2437,87 @@ input:disabled {
     );
   }
 };
+
+// Função para atualizar a disponibilidade dos produtos no Firebase
+function listenForAvailabilityChanges() {
+  const productIds = ['403', '404', 'mandioca-cozida', '602', '601'];
+
+  productIds.forEach(productId => {
+    const productRef = firebase.database().ref('product_availability/' + productId);
+
+    // Escuta as mudanças de estado em tempo real
+    productRef.on('value', snapshot => {
+      const isAvailable = snapshot.val() !== null ? snapshot.val() : true;
+      const switchElement = document.getElementById(`${productId}-switch`);
+
+      if (switchElement) {
+        switchElement.checked = isAvailable;
+        updateSwitchStyle(switchElement, isAvailable);
+        updateProductDisplay(productId, isAvailable);
+      }
+    });
+  });
+}
+
 // Função para atualizar a disponibilidade dos produtos
 function updateProductAvailability() {
-  // Lista de produtos que podem ser desativados
   const productSwitches = {
-    '403': 'torresmo',       // Torresmo
-    '404': 'mandioca-frita', // Mandioca Frita
-    'mandioca-cozida': 'mandioca-cozida', // Mandioca Cozida
-    '602': 'acai-grande',    // Açaí Grande
-    '601': 'acai-pequeno'    // Açaí Pequeno
+    '403': 'torresmo',
+    '404': 'mandioca-frita',
+    'mandioca-cozida': 'mandioca-cozida',
+    '602': 'acai-grande',
+    '601': 'acai-pequeno'
   };
 
-  // Configura os switches e eventos
   Object.entries(productSwitches).forEach(([productId, productName]) => {
     const switchId = `${productId}-switch`;
     const switchElement = document.getElementById(switchId);
     
     if (switchElement) {
-      // Carrega estado salvo ou define padrão como true (disponível)
-      const savedState = localStorage.getItem(`product_${productId}_available`);
-      const isAvailable = savedState ? savedState === 'true' : true;
+      const productRef = firebase.database().ref(`product_availability/${productId}`);
       
-      switchElement.checked = isAvailable;
-      updateSwitchStyle(switchElement, isAvailable);
-      updateProductDisplay(productId, isAvailable);
+      productRef.once('value')
+        .then(snapshot => {
+          const isAvailable = snapshot.val() !== null ? snapshot.val() : true;
+          switchElement.checked = isAvailable;
+          updateSwitchStyle(switchElement, isAvailable);
+          updateProductDisplay(productId, isAvailable);
+        })
+        .catch(error => {
+          console.error('Erro ao carregar a disponibilidade do produto do Firebase:', error);
+        });
 
       switchElement.addEventListener('input', function() {
         const isChecked = this.checked;
-        localStorage.setItem(`product_${productId}_available`, isChecked);
+        
+        productRef.set(isChecked)
+          .then(() => {
+            console.log(`Estado do produto ${productId} atualizado com sucesso no Firebase.`);
+          })
+          .catch((error) => {
+            console.error('Erro ao atualizar o estado do produto no Firebase:', error);
+          });
+
         updateSwitchStyle(this, isChecked);
         updateProductDisplay(productId, isChecked);
-        
-        // Se for mandioca, atualiza os churrascos
+
         if (productId === 'mandioca-cozida' || productId === '404') {
           updateMandiocaOptions();
         }
       });
-
     }
   });
 }
+
+// A função que será chamada assim que o DOM estiver carregado
+document.addEventListener('DOMContentLoaded', function() {
+  // Inicia o escutador para atualizações em tempo real
+  listenForAvailabilityChanges();
+  
+  // Atualiza os switches com base no Firebase
+  updateProductAvailability();
+});
+
 
 // Atualiza o estilo visual do switch
 function updateSwitchStyle(switchElement, isChecked) {
