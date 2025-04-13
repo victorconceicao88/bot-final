@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="HandheldFriendly" content="true">
   <meta name="description" content="Faça seu pedido online no Restaurante Cozinha da Vivi - Comida caseira de qualidade">
   <title>Cozinha da Vivi - Pedido Online</title>
 
@@ -26,6 +27,16 @@
   --transition-speed: 0.3s;
 }
 
+/* Prevenir zoom em inputs em dispositivos móveis */
+html {
+  -webkit-text-size-adjust: 100%;
+  -ms-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+  touch-action: manipulation;
+}
+
+
+
 body {
   font-family: 'Poppins', sans-serif;
   background-color: #fff1ea;
@@ -34,6 +45,23 @@ body {
   flex-direction: column;
   line-height: 1.6;
   overflow-x: hidden;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Melhorias para inputs em mobile */
+input, select, textarea {
+  font-size: 16px !important;
+  border-radius: 0 !important;
+}
+
+input[type="text"],
+input[type="tel"],
+input[type="email"],
+input[type="password"],
+textarea {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
 }
 
 .main-content {
@@ -142,10 +170,10 @@ body {
   font-weight: bold;
 }
 
-/* Seção do Cardápio Modernizada */
+/* Menu em mobile */
 .menu-section {
   margin-bottom: 2rem;
-  padding: 0 1.5rem;
+  padding: 0 1rem;
 }
 
 .menu-header {
@@ -269,6 +297,7 @@ body {
   height: 100%;
   border: none;
   position: relative;
+  margin-bottom: 15px;
 }
 
 .product-card:hover {
@@ -1207,6 +1236,7 @@ input:checked + .slider:before {
 
 @media (max-width: 767px) {
   .menu-title {
+    margin-top: 1rem;
     font-size: 1.8rem;
   }
   .quantity-control {
@@ -1217,15 +1247,16 @@ input:checked + .slider:before {
     font-size: 0.9rem;
   }
   .category-tabs {
-    gap: 6px;
-    justify-content: flex-start;
-  }
+  gap: 6px;
+  padding-bottom: 10px;
+  justify-content: flex-start;
+}
   
-  .category-tab {
-    min-width: 80px;
-    padding: 10px 6px;
-    font-size: 0.75rem;
-  }
+.category-tab {
+  min-width: 70px;
+  padding: 8px 5px;
+  font-size: 0.7rem;
+}
   
   .category-tab i {
     font-size: 1rem;
@@ -1419,6 +1450,13 @@ input[placeholder="Obtendo sua localização..."] {
 /* Estilo para quando o campo está desabilitado */
 input:disabled {
   background-color: #f8f9fa;
+}
+
+/* Correção para Safari iOS */
+@supports (-webkit-touch-callout: none) {
+  input, textarea {
+    font-size: 16px;
+  }
 }
 }
   </style>
@@ -3639,7 +3677,7 @@ generateKitchenOrder: (orderId) => {
 
     // Funções para lidar com opções de produtos
     const ProductOptions = {
-  showOptions: (productId, productName) => {
+  showOptions: async (productId, productName) => {
     let optionsHtml = '';
     let basePrice = 0;
     
@@ -3649,9 +3687,24 @@ generateKitchenOrder: (orderId) => {
     const isBurguerItem = ['201', '202', '203'].includes(productId);
     const isBebidaItem = productId === "5021";
 
-    // Verificar disponibilidade de mandioca
-    const mandiocaCozidaAvailable = localStorage.getItem('product_mandioca-cozida_available') !== 'false';
-    const mandiocaFritaAvailable = localStorage.getItem('product_404_available') !== 'false';
+    // Buscar disponibilidade da mandioca do Firebase
+    let mandiocaCozidaAvailable = true;
+    let mandiocaFritaAvailable = true;
+    
+    try {
+      // Buscar disponibilidade da mandioca cozida
+      const mandiocaCozidaSnapshot = await database.ref('product_availability/mandioca-cozida').once('value');
+      mandiocaCozidaAvailable = mandiocaCozidaSnapshot.exists() ? mandiocaCozidaSnapshot.val() : true;
+      
+      // Buscar disponibilidade da mandioca frita (ID 404)
+      const mandiocaFritaSnapshot = await database.ref('product_availability/404').once('value');
+      mandiocaFritaAvailable = mandiocaFritaSnapshot.exists() ? mandiocaFritaSnapshot.val() : true;
+    } catch (error) {
+      console.error("Erro ao verificar disponibilidade no Firebase:", error);
+      // Manter como disponível se houver erro
+      mandiocaCozidaAvailable = true;
+      mandiocaFritaAvailable = true;
+    }
 
     // Opções para Combo Frango Supreme (ID 301) e Combo X-Tudo (ID 302)
     if (isComboItem) {
@@ -3718,7 +3771,7 @@ generateKitchenOrder: (orderId) => {
       `;
     }
     // Opções para Maminha (ID 102)
-    else if (productId === "102") {
+    if (productId === "102") {
       basePrice = 13.00;
       
       optionsHtml = `
@@ -3758,7 +3811,7 @@ generateKitchenOrder: (orderId) => {
           <div class="option-item disabled">
             <label>
               <input type="radio" name="acompanhamento" value="Mandioca cozida" disabled>
-              Mandioca cozida
+              Mandioca cozida (Indisponível)
             </label>
           </div>
           `}
@@ -3773,13 +3826,14 @@ generateKitchenOrder: (orderId) => {
           <div class="option-item disabled">
             <label>
               <input type="radio" name="acompanhamento" value="Mandioca frita" disabled>
-              Mandioca frita
+              Mandioca frita (Indisponível)
             </label>
           </div>
           `}
           <div class="max-selection">Selecione uma opção</div>
         </div>
         
+        <!-- Restante do código permanece igual -->
         <div class="option-section">
           <div class="option-section-title">Salada <span class="required-option">*</span></div>
           <div class="option-item">
@@ -5716,6 +5770,24 @@ document.addEventListener('DOMContentLoaded', function() {
 
 
     document.addEventListener('DOMContentLoaded', init);
+
+    // Prevenir zoom em inputs em iOS
+   document.addEventListener('DOMContentLoaded', function() {
+   if (/iPhone|iPad|iPod/i.test(navigator.userAgent)) {
+    document.addEventListener('focus', function(e) {
+      if (['INPUT', 'TEXTAREA', 'SELECT'].includes(e.target.tagName)) {
+        document.body.style.zoom = '0.9999';
+      }
+    }, true);
+    
+    document.addEventListener('blur', function() {
+      document.body.style.zoom = '';
+    }, true);
+  }
+  
+  // Melhorar toques em botões
+  document.addEventListener('touchstart', function() {}, {passive: true});
+});
   </script>
 </body>
 </html>   
