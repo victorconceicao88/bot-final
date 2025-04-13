@@ -2462,19 +2462,18 @@ function updateProductAvailability() {
       updateSwitchStyle(switchElement, isAvailable);
       updateProductDisplay(productId, isAvailable);
 
-      // Adiciona event listener para mudanças
-      switchElement.addEventListener('change', function() {
+      switchElement.addEventListener('input', function() {
         const isChecked = this.checked;
         localStorage.setItem(`product_${productId}_available`, isChecked);
         updateSwitchStyle(this, isChecked);
         updateProductDisplay(productId, isChecked);
         
-        // Atualiza a visibilidade dos botões de "Adicionar"
-        const button = document.querySelector(`.product-container button[data-id="${productId}"]`);
-        if (button) {
-          button.disabled = !isChecked;  // Desabilita o botão se o produto estiver indisponível
+        // Se for mandioca, atualiza os churrascos
+        if (productId === 'mandioca-cozida' || productId === '404') {
+          updateMandiocaOptions();
         }
       });
+
     }
   });
 }
