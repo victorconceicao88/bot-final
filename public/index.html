@@ -2182,7 +2182,7 @@ input:disabled {
   </div>
 </div>
 
-</section>
+    </section>
      </main>
 
   <!-- Modal de Confirmação -->
@@ -2808,7 +2808,7 @@ function updateMandiocaOptions() {
           cliente: customerInfo.name,
           telefone: customerInfo.phone,
           whatsapp: customerInfo.whatsapp,
-          nif: nifValue || null,  // <--- ADICIONE AQUI (logo após os dados do cliente)
+          nif: nifValue || null,  
           itens: cart.map(item => ({
             nome: item.name,
             quantidade: item.quantity,
@@ -2826,9 +2826,10 @@ function updateMandiocaOptions() {
             `${customerInfo.address}, ${customerInfo.complement ? customerInfo.complement + ', ' : ''}` : 
             'Retirada no local',
           instrucoes: customerInfo.instructions,
-          data: new Date().toLocaleString('pt-BR'),
+          data: new Date().toISOString(),
           restaurante: APP_CONFIG.restaurantName,
           enderecoRestaurante: APP_CONFIG.restaurantAddress
+
         };
         
       },
@@ -3187,45 +3188,74 @@ function updateMandiocaOptions() {
         window.open(whatsappURL, "_blank");
       },
       
-      generateKitchenOrder: (orderId) => {
-        const order = orders.find(o => o.id === orderId);
-        if (!order) return '';
-        
-        const itemsText = order.itens.map(item => `
-          <div class="kitchen-order-item">
+// Na função Order.generateKitchenOrder, substitua todo o conteúdo por:
+generateKitchenOrder: (orderId) => {
+    const order = orders.find(o => o.id === orderId);
+    if (!order) return '';
+    
+    // Função auxiliar para formatar a data
+    const formatOrderDate = (dateString) => {
+        try {
+            // Tenta parsear como data ISO ou locale pt-BR
+            let date = new Date(dateString);
+            if (isNaN(date.getTime())) {
+                // Tenta parsear formato pt-BR (dd/mm/yyyy, hh:mm:ss)
+                const [datePart, timePart] = dateString.split(', ');
+                if (datePart && timePart) {
+                    const [day, month, year] = datePart.split('/');
+                    const [hours, minutes, seconds] = timePart.split(':');
+                    date = new Date(year, month-1, day, hours, minutes, seconds);
+                }
+            }
+            
+            return date.toLocaleString('pt-BR', {
+                day: '2-digit',
+                month: '2-digit',
+                year: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+        } catch (e) {
+            console.error("Erro ao formatar data:", e);
+            return dateString; // Retorna o original se não conseguir formatar
+        }
+    };
+
+    const itemsText = order.itens.map(item => `
+        <div class="kitchen-order-item">
             <span>${item.quantidade}x ${item.nome}${item.opcoes && Object.keys(item.opcoes).length > 0 ? ` (${Object.values(item.opcoes).join(', ')})` : ''}</span>
-          </div>
-        `).join('');
-        
-        const notes = order.instrucoes ? `
-          <div class="kitchen-order-item">
+        </div>
+    `).join('');
+    
+    const notes = order.instrucoes ? `
+        <div class="kitchen-order-item">
             <span><strong>OBS:</strong> ${order.instrucoes}</span>
-          </div>
-        ` : '';
-        
-        const kitchenOrder = `
-          <div class="kitchen-order" id="kitchen-order-print">
+        </div>
+    ` : '';
+    
+    const kitchenOrder = `
+        <div class="kitchen-order" id="kitchen-order-print">
             <div class="kitchen-order-header">
-              ${APP_CONFIG.restaurantName}<br>
-              Pedido #${order.id.slice(-6)}
+                ${APP_CONFIG.restaurantName}<br>
+                Pedido #${order.id.slice(-6)}
             </div>
             
             <div class="kitchen-order-item">
-              <span><strong>Cliente:</strong> ${order.cliente}</span>
+                <span><strong>Cliente:</strong> ${order.cliente}</span>
             </div>
             
             <div class="kitchen-order-item">
-              <span><strong>${order.tipoEntrega === 'entrega' ? 'Entrega' : 'Retirada'}</strong></span>
+                <span><strong>${order.tipoEntrega === 'entrega' ? 'Entrega' : 'Retirada'}</strong></span>
             </div>
             
             ${order.tipoEntrega === 'entrega' ? `
-              <div class="kitchen-order-item">
-                <span><strong>Endereço:</strong> ${order.endereco}</span>
-              </div>
+                <div class="kitchen-order-item">
+                    <span><strong>Endereço:</strong> ${order.endereco}</span>
+                </div>
             ` : ''}
             
             <div class="kitchen-order-item">
-              <span><strong>Data:</strong> ${order.data}</span>
+                <span><strong>Data:</strong> ${formatOrderDate(order.data)}</span>
             </div>
             
             <div style="margin: 10px 0; border-top: 1px dashed #000;"></div>
@@ -3235,13 +3265,13 @@ function updateMandiocaOptions() {
             ${notes}
             
             <div class="kitchen-order-footer">
-              Total: ${Utils.formatCurrency(order.total)}
+                Total: ${Utils.formatCurrency(order.total)}
             </div>
-          </div>
-        `;
-        
-        return kitchenOrder;
-      },
+        </div>
+    `;
+    
+    return kitchenOrder;
+},
       printKitchenOrder: async (orderId) => {
   try {
     // 1. Encontrar o pedido
@@ -5347,38 +5377,62 @@ DOM.deliveryOptionCards?.forEach(card => {
 
     // Geolocalização para endereço automático (NOVO)
     if (navigator.geolocation && document.getElementById('delivery-method')) {
-        document.getElementById('delivery-method').addEventListener('change', function() {
-            if (this.checked) {
-                // Mostrar loading no campo de endereço
-                const addressField = document.getElementById('customer-address');
-                addressField.placeholder = "Obtendo sua localização...";
-                
-                navigator.geolocation.getCurrentPosition(position => {
-                    // Usar API de geocoding reversa para obter endereço
-                    fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${position.coords.latitude}&lon=${position.coords.longitude}`)
-                        .then(response => response.json())
+    document.getElementById('delivery-method').addEventListener('change', function() {
+        if (this.checked) {
+            const addressField = document.getElementById('customer-address');
+            const originalPlaceholder = addressField.placeholder;
+            addressField.placeholder = "Obtendo sua localização...";
+            addressField.disabled = true;
+            
+            navigator.geolocation.getCurrentPosition(
+                position => {
+                    fetch(`https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${position.coords.latitude}&lon=${position.coords.longitude}`)
+                        .then(response => {
+                            if (!response.ok) throw new Error('Erro na API');
+                            return response.json();
+                        })
                         .then(data => {
                             if (data.address) {
-                                const road = data.address.road || '';
+                                const road = data.address.road || data.address.footway || '';
                                 const houseNumber = data.address.house_number || '';
-                                const city = data.address.city || data.address.town || data.address.village || '';
-                                const address = `${road} ${houseNumber}, ${city}`.trim().replace(/,\s*$/, '');
-                                addressField.value = address;
+                                const suburb = data.address.suburb || '';
+                                const city = data.address.city || data.address.town || data.address.village || data.address.municipality || '';
+                                const postcode = data.address.postcode || '';
+                                
+                                let addressParts = [];
+                                if (road) addressParts.push(road);
+                                if (houseNumber) addressParts.push(houseNumber);
+                                if (suburb && suburb !== city) addressParts.push(suburb);
+                                if (city) addressParts.push(city);
+                                if (postcode) addressParts.push(postcode);
+                                
+                                addressField.value = addressParts.join(', ');
                             }
-                            addressField.placeholder = "Rua, Número";
                         })
                         .catch(error => {
                             console.error("Erro ao obter endereço:", error);
-                            addressField.placeholder = "Rua, Número";
+                            Utils.showNotification("Não foi possível obter o endereço automaticamente. Por favor, preencha manualmente.", "warning");
+                        })
+                        .finally(() => {
+                            addressField.placeholder = originalPlaceholder;
+                            addressField.disabled = false;
                         });
-                }, error => {
+                },
+                error => {
                     console.error("Erro ao obter localização:", error);
-                    addressField.placeholder = "Rua, Número";
-                });
-            }
-        });
-    }
-
+                    addressField.placeholder = originalPlaceholder;
+                    addressField.disabled = false;
+                    Utils.showNotification("Por favor, ative a localização ou preencha o endereço manualmente.", "warning");
+                },
+                {
+                    enableHighAccuracy: true,
+                    timeout: 10000,
+                    maximumAge: 0
+                }
+            );
+        }
+    });
+}
     // Métodos de Pagamento
     DOM.paymentMethodCards?.forEach(card => {
         card.addEventListener('click', () => {
