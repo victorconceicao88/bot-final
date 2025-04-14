@@ -726,6 +726,12 @@ textarea {
   transition: all var(--transition-speed) ease;
 }
 
+.admin-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
 .admin-stats-card:hover {
   transform: translateY(-3px);
   box-shadow: 0 6px 15px rgba(0,0,0,0.1);
@@ -755,6 +761,7 @@ textarea {
   overflow: hidden;
   border-left: 4px solid var(--primary-color);
   transition: all 0.3s ease;
+  display: none; /* Inicialmente oculto */
 }
 
 .admin-order-card:hover {
@@ -1180,6 +1187,7 @@ input:checked + .slider:before {
   border-left: 4px solid var(--secondary-color);
 }
 
+
 /* Animações */
 @keyframes pulse {
   0% { transform: scale(1); }
@@ -1202,6 +1210,34 @@ input:checked + .slider:before {
 @media (max-width: 1199px) {
   .product-grid {
     grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  }
+}
+
+/* Versão Desktop (acima de 992px) */
+@media (min-width: 992px) {
+  .order-category {
+    width: 80%;
+    margin: 0 auto 1.5rem;
+  }
+
+  .admin-order-card {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+    padding: 1.5rem;
+  }
+
+  .admin-order-header,
+  .admin-order-footer {
+    grid-column: span 2;
+  }
+
+  .admin-order-body {
+    display: contents;
+  }
+
+  .admin-order-item {
+    margin-bottom: 0.5rem;
   }
 }
 
@@ -1435,6 +1471,151 @@ input:checked + .slider:before {
 #customer-nif:valid {
   border-color: #28a745; /* Verde quando válido (com 9 dígitos) */
 }
+/* Adicione na seção de estilos */
+#clear-cart-button {
+  transition: all 0.3s ease;
+}
+#clear-cart-button:hover {
+  background-color: #dc3545;
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(220, 53, 69, 0.3);
+}
+
+
+/* Estilos para as categorias de pedidos */
+.order-category {
+    margin-bottom: 1rem;
+    border: 1px solid #dee2e6;
+    border-radius: 0.25rem;
+    overflow: hidden;
+    will-change: transform, max-height;  /* Otimização de performance */
+}
+
+/* Cabeçalho da categoria */
+.order-category-header {
+    cursor: pointer;
+    padding: 10px;
+    background-color: #f8f9fa;
+    border-radius: 5px;
+    margin-bottom: 5px;
+}
+
+/* Ícone da seta */
+.order-category-header::after {
+    font-family: 'Font Awesome 5 Free';
+    font-weight: 900;
+}
+
+.order-category.active .order-category-header::after {
+    transform: rotate(180deg);
+}
+
+.order-category-header h5 {
+    margin: 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+/* Corpo da categoria */
+.order-category-body {
+    padding: 10px;
+    background-color: white;
+    border-radius: 0 0 5px 5px;
+    margin-bottom: 15px;
+}
+
+.order-category-body.show {
+    display: block;
+}
+
+.toggle-icon {
+     margin-left: 10px;
+     font-size: 0.8rem;
+
+}
+
+
+.order-category.active .order-category-body {
+  max-height: none;  /* Mostra imediatamente */
+  padding: 1rem 1.25rem;
+}
+
+.order-category.active .order-category-header i {
+  transform: rotate(180deg);
+}
+
+.order-category-header i {
+  transition: transform 0.2s ease;
+  font-size: 0.8rem;
+}
+
+/* Estilos para os cards de pedido */
+.admin-order-card {
+  background-color: white;
+  border-radius: 8px;
+  margin-bottom: 15px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  overflow: hidden;
+}
+
+.admin-order-header {
+  padding: 12px 15px;
+  background-color: #f8f9fa;
+  border-bottom: 1px solid #e9ecef;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.admin-order-body {
+  padding: 15px;
+}
+
+.admin-order-item {
+  padding: 8px 0;
+  border-bottom: 1px dashed #eee;
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.9rem;
+}
+
+.admin-order-footer {
+  padding: 12px 15px;
+  background-color: #f8f9fa;
+  border-top: 1px solid #e9ecef;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.admin-order-total {
+  font-weight: 800;
+  color: var(--primary-color);
+}
+
+.admin-order-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.admin-order-actions .btn {
+  font-size: 0.8rem;
+  padding: 5px 10px;
+}
+
+.badge {
+  font-size: 0.75rem;
+  padding: 3px 8px;
+}
+
+.new-order {
+  border-left: 4px solid var(--secondary-color);
+  animation: pulseHighlight 2s ease-in-out;
+}
+
 /* Estilo para o campo de endereço durante loading */
 input[placeholder="Obtendo sua localização..."] {
   color: #999;
@@ -1520,7 +1701,10 @@ input:disabled {
           <button id="checkout-button" class="btn btn-primary w-100 mt-3 py-2 fw-bold" disabled>
             <i class="fas fa-check-circle me-2"></i> Finalizar Pedido
           </button>
-          
+          <!-- Dentro do cart-sidebar, no card-footer, adicione: -->
+          <button id="clear-cart-button" class="btn btn-outline-danger w-100 mt-2 py-2">
+            <i class="fas fa-trash-alt me-2"></i> Limpar Carrinho
+          </button>         
           <p class="small text-muted mt-2 mb-0 text-center">
             <i class="fas fa-lock me-1"></i> Seus dados estão protegidos
           </p>
@@ -1569,7 +1753,6 @@ input:disabled {
       <div class="product-grid" id="product-container">
         <!-- Churrasco Misto -->
         <div class="product-card" data-id="101" data-category="churrasco" data-has-options="true">
-          <div class="product-badge bg-primary">Mais pedido</div>
           <div class="product-image-container">
             <img src="imagens/mistadecarne (2).jpeg" alt="Churrasco Misto" class="product-image">
           </div>
@@ -1636,16 +1819,34 @@ input:disabled {
           </div>
         </div>
 
-        <!-- X-Salada -->
-        <div class="product-card" data-id="201" data-category="burguers">
+        
+        <!-- Costelinha de Porco -->
+        <div class="product-card" data-id="105" data-category="churrasco" data-has-options="true">
           <div class="product-image-container">
-            <img src="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=500&auto=format&fit=crop" alt="X-Salada" class="product-image">
+            <img src="imagens/peito de frango.jpg" alt="peito de frango" class="product-image">
+          </div>
+          <div class="product-content">
+            <h3 class="product-name">Peito de Frango Grelhado</h3>
+            <p class="product-description">Costelinha de porco assada lentamente, com molho barbecue caseiro.</p>
+            <div class="product-footer">
+              <span class="product-price">€ 12,00</span>
+              <button class="add-to-cart">
+                <i class="fas fa-plus"></i> Adicionar
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- X-Salada -->
+        <div class="product-card" data-id="201" data-category="burguers" data-has-options="true">
+          <div class="product-image-container">
+            <img src="imagens/combo xtudo.jpeg" alt="x-salada" class="product-image">
           </div>
           <div class="product-content">
             <h3 class="product-name">X-Salada</h3>
-            <p class="product-description">Pão de hambúrguer, bife de hambúrguer, fiambre, queijo, salada, batata palha e milho.</p>
+            <p class="product-description">Pão, hambúrguer,queijo, fiambre, alface, tomate, milho e batata palha.</p>
             <div class="product-footer">
-              <span class="product-price">€ 6,50</span>
+              <span class="product-price">€ 6.50</span>
               <button class="add-to-cart">
                 <i class="fas fa-plus"></i> Adicionar
               </button>
@@ -1654,7 +1855,7 @@ input:disabled {
         </div>
 
         <!-- X-Bacon -->
-        <div class="product-card" data-id="202" data-category="burguers">
+        <div class="product-card" data-id="202" data-category="burguers" data-has-options="true">
           <div class="product-image-container">
             <img src="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=500&auto=format&fit=crop" alt="X-Bacon" class="product-image">
           </div>
@@ -1673,7 +1874,7 @@ input:disabled {
         
         
         <!-- X-frango -->
-        <div class="product-card" data-id="203" data-category="burguers">
+        <div class="product-card" data-id="203" data-category="burguers" data-has-options="true">
           <div class="product-image-container">
             <img src="imagens/xfrango.jpg" alt="X-Frango" class="product-image">
           </div>
@@ -1688,6 +1889,40 @@ input:disabled {
             </div>
           </div>
         </div>
+
+             <!-- X-frango -->
+             <div class="product-card" data-id="204" data-category="burguers" data-has-options="true">
+              <div class="product-image-container">
+                <img src="imagens/xfrango.jpg" alt="X-Especial" class="product-image">
+              </div>
+              <div class="product-content">
+                <h3 class="product-name">X-Especial</h3>
+                <p class="product-description">Pão, hambúrguer, queijo, fiambre, ovo, alface, tomate, milho e batata palha.</p>
+                <div class="product-footer">
+                  <span class="product-price">€ 7,00</span>
+                  <button class="add-to-cart">
+                    <i class="fas fa-plus"></i> Adicionar
+                  </button>
+                </div>
+              </div>
+            </div>
+
+                  <!-- X-frango -->
+            <div class="product-card" data-id="205" data-category="burguers" data-has-options="true">
+            <div class="product-image-container">
+              <img src="imagens/xfrango.jpg" alt="X-Frango" class="product-image">
+            </div>
+            <div class="product-content">
+              <h3 class="product-name">X-Tudo</h3>
+              <p class="product-description">Pão, hambúrguer, Banco, queijo, fiambre,Salsicha, ovo, alface, tomate, milho e batata palha.</p>
+              <div class="product-footer">
+                <span class="product-price">€ 9,00</span>
+                <button class="add-to-cart">
+                  <i class="fas fa-plus"></i> Adicionar
+                </button>
+              </div>
+            </div>
+          </div>
        
 <!-- Combo Frango Supreme -->
 <div class="product-card" data-id="301" data-category="combos" data-has-options="true">
@@ -2088,7 +2323,7 @@ input:disabled {
           </a>
           <div class="d-flex align-items-center">
             <div class="notification-bell" id="notification-bell">
-              <i class="fas fa-bell"></i>
+          
               <span class="notification-badge d-none" id="notification-badge">0</span>
             </div>
             <button id="admin-logout" class="btn btn-outline-light btn-sm">
@@ -2098,63 +2333,10 @@ input:disabled {
         </div>
       </nav>
     
-      <div class="container admin-panel-container my-4">
-        <div class="row">
-          <div class="col-md-3">
-            <div class="admin-stats-container">
-              <div class="card admin-stats-card">
-                <div class="card-body">
-                  <h5 class="card-title">Pedidos Hoje</h5>
-                  <div class="stat-value text-primary" id="today-orders">0</div>
-                </div>
-              </div>
-              
-              <div class="card admin-stats-card">
-                <div class="card-body">
-                  <h5 class="card-title">Em Preparo</h5>
-                  <div class="stat-value text-warning" id="preparing-orders">0</div>
-                </div>
-              </div>
-              
-              <div class="card admin-stats-card">
-                <div class="card-body">
-                  <h5 class="card-title">Para Entregar</h5>
-                  <div class="stat-value text-info" id="delivery-orders">0</div>
-                </div>
-              </div>
-            </div>
-    
-            <div class="card admin-card">
-              <div class="card-body">
-                <h3 class="h5 card-title">Filtros</h3>
-                <div class="mb-3">
-                  <label class="form-label">Status</label>
-                  <select class="form-select admin-filter-dropdown" id="status-filter">
-                    <option value="all">Todos</option>
-                    <option value="pending">Pendentes</option>
-                    <option value="preparing">Em Preparo</option>
-                    <option value="ready">Prontos</option>
-                    <option value="delivered">Entregues</option>
-                    <option value="cancelled">Cancelados</option>
-                  </select>
-                </div>
-                <div class="mb-3">
-                  <label class="form-label">Tipo</label>
-                  <select class="form-select admin-filter-dropdown" id="type-filter">
-                    <option value="all">Todos</option>
-                    <option value="delivery">Entrega</option>
-                    <option value="pickup">Retirada</option>
-                  </select>
-                </div>
-                <button id="apply-filters" class="btn btn-primary w-100 admin-btn">
-                  <i class="fas fa-filter me-1"></i> Aplicar
-                </button>
-              </div>
-            </div>
-          </div>
+  
     
           <div class="col-md-9">
-            <div class="card admin-card">
+          <div class="card admin-card">
               <div class="card-header bg-white">
                 <div class="d-flex justify-content-between align-items-center">
                   <h3 class="h5 mb-0">Pedidos Recentes</h3>
@@ -2165,17 +2347,38 @@ input:disabled {
               </div>
               <div class="card-body p-0">
                 <div id="day-tabs" class="day-tabs"></div>
-                <div class="admin-orders-container" id="orders-accordion">
-                  <!-- Pedidos serão agrupados por data aqui -->
-                  <div class="list-group-item text-center py-5">
-                    <i class="fas fa-clipboard-list fa-3x text-muted mb-3"></i>
-                    <p class="mb-0">Nenhum pedido encontrado</p>
+                <!-- Substitua a div admin-orders-container por: -->
+           
+                  <div class="order-category" data-status="pending">
+                      <div class="order-category-header">
+                          <h5 class="d-flex justify-content-between align-items-center">
+                              <span>
+                                  Pendentes 
+                                  <span class="badge bg-warning ms-2" id="pending-count">0</span>
+                              </span>
+                              <i class="fas fa-chevron-right toggle-icon"></i>
+                          </h5>
+                      </div>
+                      <div class="order-category-body" style="display: none;"></div>
                   </div>
-                </div>
+                                  
+                  <div class="order-category" data-status="preparing">
+                    <div class="order-category-header">
+                      <h5>Em Preparo <span class="badge bg-info" id="preparing-count">0</span></h5>
+                    </div>
+                    <div class="order-category-body"></div>
+                  </div>
+                  
+                  <div class="order-category" data-status="ready">
+                    <div class="order-category-header">
+                      <h5>Prontos <span class="badge bg-success" id="ready-count">0</span></h5>
+                    </div>
+                    <div class="order-category-body"></div>
+                  </div>
+        
               </div>
             </div>
     
- <!-- Adicionando a seção de controle de disponibilidade de produtos -->
   <!-- Adicionando a seção de controle de disponibilidade de produtos -->
   <div class="admin-switch-container">
     <h4 class="mb-3">Controle de Disponibilidade</h4>
@@ -2390,10 +2593,9 @@ input:disabled {
     let orders = [];
     let isAdminLoggedIn = localStorage.getItem('adminLoggedIn') === 'true';
     let lastOrderCount = 0;
-    let pendingOrdersCount = 0;
     let currentProductOptions = null;
     let newOrders = []; // Para rastrear novos pedidos
-    let lastNotificationTime = 0;
+
 
     // Elementos do DOM
     const DOM = {
@@ -2497,6 +2699,7 @@ function listenForAvailabilityChanges() {
   });
 }
 
+
 // Função para atualizar a disponibilidade dos produtos
 function updateProductAvailability() {
   const productSwitches = {
@@ -2587,8 +2790,8 @@ function updateMandiocaOptions() {
   const mandiocaCozidaAvailable = localStorage.getItem('product_mandioca-cozida_available') !== 'false';
   const mandiocaFritaAvailable = localStorage.getItem('product_404_available') !== 'false';
 
-  // Atualiza todos os produtos de churrasco (IDs 101-104)
-  for (let i = 101; i <= 104; i++) {
+  // Atualiza todos os produtos de churrasco (IDs 101-105)
+  for (let i = 101; i <= 105; i++) {
     const productCard = document.querySelector(`.product-card[data-id="${i}"]`);
     if (!productCard) continue;
 
@@ -2597,39 +2800,56 @@ function updateMandiocaOptions() {
 }
 
     // Funções do Firebase
-    const FirebaseService = {
-      saveOrder: async (order) => {
+// Funções do Firebase - VERSÃO CORRIGIDA
+const FirebaseService = {
+    saveOrder: async (order) => {
         try {
-          const newOrderRef = database.ref('orders').push();
-          await newOrderRef.set(order);
-          return { ...order, id: newOrderRef.key };
+            const newOrderRef = database.ref('orders').push();
+            await newOrderRef.set(order);
+            return { ...order, id: newOrderRef.key };
         } catch (error) {
-          console.error("Erro ao salvar pedido:", error);
-          return null;
+            console.error("Erro ao salvar pedido:", error);
+            return null;
         }
-      },
+    },
 
-      listenForOrders: (callback) => {
-        database.ref('orders').on('value', (snapshot) => {
-          const ordersData = snapshot.val();
-          const ordersArray = ordersData ? Object.keys(ordersData).map(key => ({
+    // LISTENER CORRIGIDO PARA TEMPO REAL
+listenForOrders: (callback) => {
+    const ordersRef = database.ref('orders');
+    
+    ordersRef.orderByChild('status').on('value', (snapshot) => {
+        const ordersData = snapshot.val();
+        const ordersArray = ordersData ? Object.keys(ordersData).map(key => ({
             id: key,
             ...ordersData[key]
-          })) : [];
-          callback(ordersArray);
-        });
-      },
-
-      updateOrderStatus: async (orderId, newStatus) => {
-        try {
-          await database.ref(`orders/${orderId}/status`).set(newStatus);
-          return true;
-        } catch (error) {
-          console.error("Erro ao atualizar status:", error);
-          return false;
+        })) : [];
+        
+        orders = ordersArray;
+        callback(ordersArray);
+        
+        if (isAdminLoggedIn) {
+            Order.updateAdminPanel();
         }
-      }
-    };
+    });
+},
+
+    updateOrderStatus: async (orderId, newStatus) => {
+        try {
+            await database.ref(`orders/${orderId}/status`).set(newStatus);
+            
+            // Remove dos novos pedidos se existir e atualiza no Firebase
+            newOrders = newOrders.filter(id => id !== orderId);
+            
+            // Atualiza o timestamp de modificação
+            await database.ref(`orders/${orderId}/lastUpdated`).set(firebase.database.ServerValue.TIMESTAMP);
+            
+            return true;
+        } catch (error) {
+            console.error("Erro ao atualizar status:", error);
+            return false;
+        }
+    }
+};
 
     // Funções utilitárias
     const Utils = {
@@ -2777,58 +2997,59 @@ function updateMandiocaOptions() {
       return { subtotal, deliveryFee, total };
       },
 
-      updateUI: () => {
-        DOM.cartItems.innerHTML = "";
-        
-        const { subtotal, deliveryFee, total } = Cart.getTotals();
-        const itemCount = cart.reduce((count, item) => count + item.quantity, 0);
+  updateUI: () => {
+  DOM.cartItems.innerHTML = "";
+  
+  const { subtotal, deliveryFee, total } = Cart.getTotals();
+  const itemCount = cart.reduce((count, item) => count + item.quantity, 0);
 
-        if (cart.length === 0) {
-          DOM.cartItems.innerHTML = `
-            <div class="list-group-item text-center py-4 empty-cart">
-              <i class="fas fa-shopping-cart empty-cart-icon mb-3"></i>
-              <p class="mb-0">Seu carrinho está vazio</p>
-              <small class="text-muted">Adicione itens para continuar</small>
+  if (cart.length === 0) {
+    DOM.cartItems.innerHTML = `
+      <div class="list-group-item text-center py-4 empty-cart">
+        <i class="fas fa-shopping-cart empty-cart-icon mb-3"></i>
+        <p class="mb-0">Seu carrinho está vazio</p>
+        <small class="text-muted">Adicione itens para continuar</small>
+      </div>
+    `;
+    document.getElementById('clear-cart-button').style.display = 'none';
+  } else {
+    document.getElementById('clear-cart-button').style.display = 'block';
+    cart.forEach(item => {
+      const li = document.createElement("div");
+      li.className = "list-group-item";
+      
+      let optionsText = '';
+      if (item.options && Object.keys(item.options).length > 0) {
+        optionsText = Object.values(item.options).map(opt => opt.join(', ')).join(' | ');
+      }
+      
+      li.innerHTML = `
+        <div class="d-flex justify-content-between align-items-center">
+          <div>
+            <h6 class="mb-1">${item.name}</h6>
+            ${optionsText ? `<small class="text-muted">${optionsText}</small>` : ''}
+            <small class="d-block text-muted">${Utils.formatCurrency(item.price)}</small>
+          </div>
+          <div class="d-flex align-items-center gap-2">
+            <div class="cart-item-quantity">
+              <button class="quantity-btn decrease" data-id="${item.id}">
+                <i class="fas fa-minus"></i>
+              </button>
+              <span class="quantity mx-1">${item.quantity}</span>
+              <button class="quantity-btn increase" data-id="${item.id}">
+                <i class="fas fa-plus"></i>
+              </button>
             </div>
-          `;
-        } else {
-          cart.forEach(item => {
-            const li = document.createElement("div");
-            li.className = "list-group-item";
-            
-            let optionsText = '';
-            if (item.options && Object.keys(item.options).length > 0) {
-              optionsText = Object.values(item.options).map(opt => opt.join(', ')).join(' | ');
-            }
-            
-            li.innerHTML = `
-              <div class="d-flex justify-content-between align-items-center">
-                <div>
-                  <h6 class="mb-1">${item.name}</h6>
-                  ${optionsText ? `<small class="text-muted">${optionsText}</small>` : ''}
-                  <small class="d-block text-muted">${Utils.formatCurrency(item.price)}</small>
-                </div>
-                <div class="d-flex align-items-center gap-2">
-                  <div class="cart-item-quantity">
-                    <button class="quantity-btn decrease" data-id="${item.id}">
-                      <i class="fas fa-minus"></i>
-                    </button>
-                    <span class="quantity mx-1">${item.quantity}</span>
-                    <button class="quantity-btn increase" data-id="${item.id}">
-                      <i class="fas fa-plus"></i>
-                    </button>
-                  </div>
-                  <span class="fw-bold ms-2">${Utils.formatCurrency(item.price * item.quantity)}</span>
-                  <button class="remove-item btn btn-sm btn-outline-danger ms-2" data-id="${item.id}">
-                    <i class="fas fa-trash"></i>
-                  </button>
-                </div>
-              </div>
-            `;
-            DOM.cartItems.appendChild(li);
-          });
-        }
-
+            <span class="fw-bold ms-2">${Utils.formatCurrency(item.price * item.quantity)}</span>
+            <button class="remove-item btn btn-sm btn-outline-danger ms-2" data-id="${item.id}">
+              <i class="fas fa-trash"></i>
+            </button>
+          </div>
+        </div>
+      `;
+      DOM.cartItems.appendChild(li);
+    });
+  }
         DOM.subtotalElement.textContent = Utils.formatCurrency(subtotal);
         document.getElementById("delivery-fee").textContent = Utils.formatCurrency(deliveryFee);
         DOM.totalElement.textContent = Utils.formatCurrency(total);
@@ -3052,79 +3273,136 @@ function updateMandiocaOptions() {
     }, 3000);
 },
 
-      updateAdminPanel: () => {
-        newOrders = [];
-        const statusFilter = DOM.statusFilter.value;
-        const typeFilter = DOM.typeFilter.value;
-        
-        let filteredOrders = [...orders].reverse();
-        
-        if (statusFilter !== 'all') {
-          filteredOrders = filteredOrders.filter(order => order.status === statusFilter);
+// Substitua a função updateAdminPanel por esta versão corrigida
+updateAdminPanel: () => {
+    // Contador de pedidos por status
+    const counters = {
+        pending: 0,
+        preparing: 0,
+        ready: 0,
+        delivered: 0,
+        cancelled: 0
+    };
+
+    // Agrupa os pedidos por status
+    const ordersByStatus = {
+        pending: orders.filter(order => order.status === 'pending'),
+        preparing: orders.filter(order => order.status === 'preparing'),
+        ready: orders.filter(order => order.status === 'ready'),
+        delivered: orders.filter(order => order.status === 'delivered'),
+        cancelled: orders.filter(order => order.status === 'cancelled')
+    };
+
+    orders.forEach(order => {
+        if (counters.hasOwnProperty(order.status)) {
+            counters[order.status]++;
         }
-        
-        if (typeFilter !== 'all') {
-          filteredOrders = filteredOrders.filter(order => order.tipoEntrega === typeFilter);
+    });
+
+    // Atualiza todos os contadores visíveis
+    const updateCounter = (id, value) => {
+        const element = document.getElementById(id);
+        if (element) {
+            element.textContent = value;
+            element.style.display = value > 0 ? 'inline-block' : 'none';
         }
-        
-        // Agrupa pedidos por data
-        const ordersByDate = {};
-        filteredOrders.forEach(order => {
-          const date = new Date(order.data);
-          const dateKey = Utils.formatDate(order.data);
-          
-          if (!ordersByDate[dateKey]) {
-            ordersByDate[dateKey] = [];
-          }
-          ordersByDate[dateKey].push(order);
-        });
-        
-        // Atualiza as abas de dias
-        DOM.dayTabs.innerHTML = '';
-        Object.keys(ordersByDate).forEach(dateKey => {
-          const tab = document.createElement('div');
-          tab.className = 'day-tab';
-          tab.textContent = dateKey;
-          tab.addEventListener('click', () => {
-            document.querySelectorAll('.day-tab').forEach(t => t.classList.remove('active'));
-            tab.classList.add('active');
-            Order.renderOrdersForDate(dateKey, ordersByDate[dateKey]);
-          });
-          
-          if (DOM.dayTabs.children.length === 0) {
-            tab.classList.add('active');
-          }
-          
-          DOM.dayTabs.appendChild(tab);
-        });
-        
-        // Renderiza os pedidos da primeira data ou mensagem de nenhum pedido
-        DOM.ordersList.innerHTML = '';
-        
-        if (Object.keys(ordersByDate).length > 0) {
-          const firstDate = Object.keys(ordersByDate)[0];
-          Order.renderOrdersForDate(firstDate, ordersByDate[firstDate]);
-        } else {
-          DOM.ordersList.innerHTML = `
-            <div class="list-group-item text-center py-5">
-              <i class="fas fa-clipboard-list fa-3x text-muted mb-3"></i>
-              <p class="mb-0">Nenhum pedido encontrado</p>
-            </div>
-          `;
+    };
+
+    updateCounter('pending-count', counters.pending);
+    updateCounter('preparing-count', counters.preparing);
+    updateCounter('ready-count', counters.ready);
+    updateCounter('delivered-count', counters.delivered);
+
+    // Renderiza os pedidos em cada categoria
+    Object.keys(ordersByStatus).forEach(status => {
+        const container = document.querySelector(`.order-category[data-status="${status}"] .order-category-body`);
+        if (container) {
+            container.innerHTML = '';
+            
+            if (ordersByStatus[status].length === 0) {
+                container.innerHTML = '<div class="text-center text-muted py-3">Nenhum pedido</div>';
+            } else {
+                ordersByStatus[status].forEach(order => {
+                    const orderElement = Order.createOrderElement(order);
+                    container.appendChild(orderElement);
+                });
+            }
         }
-        
-        const today = Utils.getTodayDate();
-        const todayOrdersCount = orders.filter(order => order.data.includes(today)).length;
-        const preparingOrdersCount = orders.filter(order => order.status === 'preparing').length;
-        const deliveryOrdersCount = orders.filter(order => order.status === 'ready' && order.tipoEntrega === 'entrega').length;
-        
-        DOM.todayOrders.textContent = todayOrdersCount;
-        DOM.preparingOrders.textContent = preparingOrdersCount;
-        DOM.deliveryOrders.textContent = deliveryOrdersCount;
-        
+    });
+
+    if (DOM.lastUpdate) {
         Utils.updateTimestamp();
-      },
-      
+    }
+},
+
+createOrderElement: (order) => {
+    const orderElement = document.createElement('div');
+    orderElement.className = 'admin-order-card'; // Removida a verificação de isNew
+    
+    const itemsHtml = order.itens.map(item => `
+        <div class="admin-order-item">
+            <span>${item.quantidade}x ${item.nome}${item.opcoes && Object.keys(item.opcoes).length > 0 ? ` (${Object.values(item.opcoes).join(', ')})` : ''}</span>
+            <span>${Utils.formatCurrency(item.preco * item.quantidade)}</span>
+        </div>
+    `).join('');
+    
+    orderElement.innerHTML = `
+        <div class="admin-order-header">
+            <div>
+                <span class="fw-bold">Pedido #${order.id.slice(-6)}</span>
+                <span class="badge ${Order.getStatusClass(order.status)}">${Order.getStatusText(order.status)}</span>
+            </div>
+            <div class="text-muted small">${new Date(order.data).toLocaleString('pt-BR')}</div>
+        </div>
+        
+        <div class="admin-order-body">
+            <div class="mb-3">
+                <div class="d-flex align-items-center mb-1">
+                    <i class="fas fa-user me-2"></i>
+                    <span>${order.cliente}</span>
+                </div>
+                <div class="d-flex align-items-center mb-1">
+                    <i class="fas fa-phone me-2"></i>
+                    <span>${order.telefone}</span>
+                </div>
+                <div class="d-flex align-items-center">
+                    <i class="fas ${order.tipoEntrega === 'entrega' ? 'fa-motorcycle' : 'fa-store'} me-2"></i>
+                    <span>${order.tipoEntrega === 'entrega' ? 'Entrega' : 'Retirada'}</span>
+                </div>
+                ${order.instrucoes ? `
+                    <div class="d-flex align-items-center mt-2">
+                        <i class="fas fa-sticky-note me-2"></i>
+                        <span>${order.instrucoes}</span>
+                    </div>
+                ` : ''}
+            </div>
+            
+            <div class="border-top pt-3">
+                ${itemsHtml}
+            </div>
+        </div>
+        
+        <div class="admin-order-footer">
+            <div class="admin-order-total">Total: ${Utils.formatCurrency(order.total)}</div>
+            <div class="admin-order-actions">
+                <button class="btn btn-outline-primary btn-sm update-status" data-id="${order.id}" data-status="preparing">
+                    <i class="fas fa-utensils me-1"></i> Preparar
+                </button>
+                <button class="btn btn-outline-success btn-sm update-status" data-id="${order.id}" data-status="ready">
+                    <i class="fas fa-check me-1"></i> Pronto
+                </button>
+                <button class="btn btn-outline-danger btn-sm update-status" data-id="${order.id}" data-status="cancelled">
+                    <i class="fas fa-times me-1"></i> Cancelar
+                </button>
+                <button class="btn btn-outline-secondary btn-sm view-kitchen-order" data-id="${order.id}">
+                    <i class="fas fa-print me-1"></i> Imprimir
+                </button>
+            </div>
+        </div>
+    `;
+
+    return orderElement;
+},  
       renderOrdersForDate: (dateKey, ordersForDate) => {
         DOM.ordersList.innerHTML = '';
         
@@ -3145,7 +3423,7 @@ function updateMandiocaOptions() {
                 <span class="fw-bold">Pedido #${order.id.slice(-6)}</span>
                 <span class="admin-order-status ${Order.getStatusClass(order.status)}">${Order.getStatusText(order.status)}</span>
               </div>
-              <div class="text-muted small">${order.data}</div>
+              <div class="text-muted small">${new Date(order.data).toLocaleString()}</div>
             </div>
             
             <div class="admin-order-body">
@@ -3193,8 +3471,10 @@ function updateMandiocaOptions() {
               </div>
             </div>
           `;
+
+          return orderElement;
           
-          DOM.ordersList.appendChild(orderElement);
+        DOM.ordersList.appendChild(orderElement);
         });
       },
       
@@ -3676,15 +3956,15 @@ generateKitchenOrder: (orderId) => {
     };
 
     // Funções para lidar com opções de produtos
-    const ProductOptions = {
-  showOptions: async (productId, productName) => {
+   const ProductOptions = {
+   showOptions: async (productId, productName) => {
     let optionsHtml = '';
     let basePrice = 0;
     
-    const isChurrascoItem = ['101', '102', '103', '104'].includes(productId);
+    const isChurrascoItem = ['101', '102', '103', '104','105'].includes(productId);
     const isAcaiItem = ['601', '602'].includes(productId);
     const isComboItem = ['301', '302'].includes(productId);
-    const isBurguerItem = ['201', '202', '203'].includes(productId);
+    const isBurguerItem = ['201', '202', '203','204','205'].includes(productId);
     const isBebidaItem = productId === "5021";
 
     // Buscar disponibilidade da mandioca do Firebase
@@ -3768,153 +4048,215 @@ generateKitchenOrder: (orderId) => {
             </label>
           </div>
         </div>
+
+        <div class="option-section">
+        <div class="option-section-title">Adicionais</div>
+
+        <div class="option-item">
+          <label>
+            <input type="checkbox" name="adicionais" value="Bacon" data-additional-price="1.5">
+            Bacon <span class="additional-price">+€1,50</span>
+          </label>
+        </div>
+
+        <div class="option-item">
+          <label>
+            <input type="checkbox" name="adicionais" value="Queijo extra" data-additional-price="1">
+            Queijo extra <span class="additional-price">+€1,00</span>
+          </label>
+        </div>
+
+        <div class="option-item">
+          <label>
+            <input type="checkbox" name="adicionais" value="Ovo" data-additional-price="0.5">
+            Ovo <span class="additional-price">+€0,50</span>
+          </label>
+        </div>
+      </div>
       `;
     }
     // Opções para Maminha (ID 102)
-    if (productId === "102") {
-      basePrice = 13.00;
-      
-      optionsHtml = `
-        <div class="option-section">
-          <div class="option-section-title">Feijão <span class="required-option">*</span></div>
-          <div class="option-item">
-            <label>
-              <input type="radio" name="feijao" value="Feijão de caldo" required>
-              Feijão de caldo
-            </label>
-          </div>
-          <div class="option-item">
-            <label>
-              <input type="radio" name="feijao" value="Feijão tropeiro" required>
-              Feijão tropeiro
-            </label>
-          </div>
-          <div class="max-selection">Selecione uma opção</div>
-        </div>
-        
-        <div class="option-section">
-          <div class="option-section-title">Acompanhamentos <span class="required-option">*</span></div>
-          <div class="option-item">
-            <label>
-              <input type="radio" name="acompanhamento" value="Banana frita" required>
-              Banana frita
-            </label>
-          </div>
-          ${mandiocaCozidaAvailable ? `
-          <div class="option-item">
-            <label>
-              <input type="radio" name="acompanhamento" value="Mandioca cozida" required>
-              Mandioca cozida
-            </label>
-          </div>
-          ` : `
-          <div class="option-item disabled">
-            <label>
-              <input type="radio" name="acompanhamento" value="Mandioca cozida" disabled>
-              Mandioca cozida (Indisponível)
-            </label>
-          </div>
-          `}
-          ${mandiocaFritaAvailable ? `
-          <div class="option-item">
-            <label>
-              <input type="radio" name="acompanhamento" value="Mandioca frita" required>
-              Mandioca frita
-            </label>
-          </div>
-          ` : `
-          <div class="option-item disabled">
-            <label>
-              <input type="radio" name="acompanhamento" value="Mandioca frita" disabled>
-              Mandioca frita (Indisponível)
-            </label>
-          </div>
-          `}
-          <div class="max-selection">Selecione uma opção</div>
-        </div>
-        
-        <!-- Restante do código permanece igual -->
-        <div class="option-section">
-          <div class="option-section-title">Salada <span class="required-option">*</span></div>
-          <div class="option-item">
-            <label>
-              <input type="radio" name="salada" value="Salada mista" required>
-              Salada mista
-            </label>
-          </div>
-          <div class="option-item">
-            <label>
-              <input type="radio" name="salada" value="Vinagrete" required>
-              Vinagrete
-            </label>
-          </div>
-          <div class="option-item">
-            <label>
-              <input type="radio" name="salada" value="Não quero salada" required>
-              Não quero salada
-            </label>
-          </div>
-          <div class="max-selection">Selecione uma opção</div>
-        </div>
-        
-        <div class="option-section">
-          <div class="option-section-title">Bebidas</div>
-          <div class="option-item">
-            <label>
-              <input type="radio" name="bebida" value="Sem bebida" checked>
-              Sem bebida
-            </label>
-          </div>
-          <div class="option-item">
-            <label>
-              <input type="radio" name="bebida" value="Água sem gás 500ml" data-additional-price="1">
-              Água sem gás 500ml <span class="additional-price">+€1,00</span>
-            </label>
-          </div>
-          <div class="option-item">
-            <label>
-              <input type="radio" name="bebida" value="Água com gás Castelo" data-additional-price="1.5">
-              Água com gás Castelo <span class="additional-price">+€1,50</span>
-            </label>
-          </div>
-          <div class="option-item">
-            <label>
-              <input type="radio" name="bebida" value="Água com gás Pedras 500ml" data-additional-price="1.5">
-              Água com gás Pedras 500ml <span class="additional-price">+€1,50</span>
-            </label>
-          </div>
-          <div class="option-item">
-            <label>
-              <input type="radio" name="bebida" value="Coca-Cola" data-additional-price="2">
-              Coca-Cola <span class="additional-price">+€2,00</span>
-            </label>
-          </div>
-          <div class="option-item">
-            <label>
-              <input type="radio" name="bebida" value="Coca-Cola Zero" data-additional-price="2">
-              Coca-Cola Zero <span class="additional-price">+€2,00</span>
-            </label>
-          </div>
-          <div class="option-item">
-            <label>
-              <input type="radio" name="bebida" value="Fanta Laranja" data-additional-price="2">
-              Fanta Laranja <span class="additional-price">+€2,00</span>
-            </label>
-          </div>
-          <div class="option-item">
-            <label>
-              <input type="radio" name="bebida" value="Guaraná Antarctica" data-additional-price="2">
-              Guaraná Antarctica <span class="additional-price">+€2,00</span>
-            </label>
-          </div>
-          <div class="option-item">
-            <label>
-              <input type="radio" name="bebida" value="Ice Tea de Manga" data-additional-price="2">
-              Ice Tea de Manga <span class="additional-price">+€2,00</span>
-            </label>
-          </div>
-        </div>
-      `;
+    else if (productId === "102") {
+  basePrice = 13.00;
+  
+  optionsHtml = `
+    <div class="option-section">
+      <div class="option-section-title">Feijão <span class="required-option">*</span></div>
+      <div class="option-item">
+        <label>
+          <input type="radio" name="feijao" value="Feijão de caldo" required>
+          Feijão de caldo
+        </label>
+      </div>
+      <div class="option-item">
+        <label>
+          <input type="radio" name="feijao" value="Feijão tropeiro" required>
+          Feijão tropeiro
+        </label>
+      </div>
+      <div class="max-selection">Selecione uma opção</div>
+    </div>
+    
+    <div class="option-section">
+      <div class="option-section-title">Acompanhamentos <span class="required-option">*</span></div>
+      <div class="option-item">
+        <label>
+          <input type="radio" name="acompanhamento" value="Banana frita" required>
+          Banana frita
+        </label>
+      </div>
+      ${mandiocaCozidaAvailable ? `
+      <div class="option-item">
+        <label>
+          <input type="radio" name="acompanhamento" value="Mandioca cozida" required>
+          Mandioca cozida
+        </label>
+      </div>
+      ` : `
+      <div class="option-item disabled">
+        <label>
+          <input type="radio" name="acompanhamento" value="Mandioca cozida" disabled>
+          Mandioca cozida
+        </label>
+      </div>
+      `}
+      ${mandiocaFritaAvailable ? `
+      <div class="option-item">
+        <label>
+          <input type="radio" name="acompanhamento" value="Mandioca frita" required>
+          Mandioca frita
+        </label>
+      </div>
+      ` : `
+      <div class="option-item disabled">
+        <label>
+          <input type="radio" name="acompanhamento" value="Mandioca frita" disabled>
+          Mandioca frita
+        </label>
+      </div>
+      `}
+          <!-- Nova seção para ponto da carne -->
+    <div class="option-section" id="ponto-carne-section">
+      <div class="option-section-title">Ponto da Carne <span class="required-option">*</span></div>
+      <div class="option-item">
+        <label>
+          <input type="radio" name="ponto_carne" value="Selada" required>
+          Selada
+        </label>
+      </div>
+      <div class="option-item">
+        <label>
+          <input type="radio" name="ponto_carne" value="Mal passada" required>
+          Mal passada
+        </label>
+      </div>
+      <div class="option-item">
+        <label>
+          <input type="radio" name="ponto_carne" value="Ao ponto" required checked>
+          Ao ponto
+        </label>
+      </div>
+      <div class="option-item">
+        <label>
+          <input type="radio" name="ponto_carne" value="Ao ponto para bem" required>
+          Ao ponto para bem
+        </label>
+      </div>
+      <div class="option-item">
+        <label>
+          <input type="radio" name="ponto_carne" value="Bem passado" required>
+          Bem passado
+        </label>
+      </div>
+      <div class="option-item">
+      <label>
+        <input type="radio" name="ponto_carne" value="Indiferente">
+        Ponto da carne: Indiferente
+      </label>
+     </div>
+
+    </div>
+    <div class="option-section">
+      <div class="option-section-title">Salada <span class="required-option">*</span></div>
+      <div class="option-item">
+        <label>
+          <input type="radio" name="salada" value="Salada mista" required>
+          Salada mista
+        </label>
+      </div>
+      <div class="option-item">
+        <label>
+          <input type="radio" name="salada" value="Vinagrete" required>
+          Vinagrete
+        </label>
+      </div>
+      <div class="option-item">
+        <label>
+          <input type="radio" name="salada" value="Não quero salada" required>
+          Não quero salada
+        </label>
+      </div>
+      <div class="max-selection">Selecione uma opção</div>
+    </div>
+    
+    <div class="option-section">
+      <div class="option-section-title">Bebidas</div>
+      <div class="option-item">
+        <label>
+          <input type="radio" name="bebida" value="Sem bebida" checked>
+          Sem bebida
+        </label>
+      </div>
+      <div class="option-item">
+        <label>
+          <input type="radio" name="bebida" value="Água sem gás 500ml" data-additional-price="1">
+          Água sem gás 500ml <span class="additional-price">+€1,00</span>
+        </label>
+      </div>
+      <div class="option-item">
+        <label>
+          <input type="radio" name="bebida" value="Água com gás Castelo" data-additional-price="1.5">
+          Água com gás Castelo <span class="additional-price">+€1,50</span>
+        </label>
+      </div>
+      <div class="option-item">
+        <label>
+          <input type="radio" name="bebida" value="Água com gás Pedras 500ml" data-additional-price="1.5">
+          Água com gás Pedras 500ml <span class="additional-price">+€1,50</span>
+        </label>
+      </div>
+      <div class="option-item">
+        <label>
+          <input type="radio" name="bebida" value="Coca-Cola" data-additional-price="2">
+          Coca-Cola <span class="additional-price">+€2,00</span>
+        </label>
+      </div>
+      <div class="option-item">
+        <label>
+          <input type="radio" name="bebida" value="Coca-Cola Zero" data-additional-price="2">
+          Coca-Cola Zero <span class="additional-price">+€2,00</span>
+        </label>
+      </div>
+      <div class="option-item">
+        <label>
+          <input type="radio" name="bebida" value="Fanta Laranja" data-additional-price="2">
+          Fanta Laranja <span class="additional-price">+€2,00</span>
+        </label>
+      </div>
+      <div class="option-item">
+        <label>
+          <input type="radio" name="bebida" value="Guaraná Antarctica" data-additional-price="2">
+          Guaraná Antarctica <span class="additional-price">+€2,00</span>
+        </label>
+      </div>
+      <div class="option-item">
+        <label>
+          <input type="radio" name="bebida" value="Ice Tea de Manga" data-additional-price="2">
+          Ice Tea de Manga <span class="additional-price">+€2,00</span>
+        </label>
+      </div>
+    </div>
+  `;
     }
     // Opções para Linguiça Toscana (ID 103)
     else if (productId === "103") {
@@ -4206,8 +4548,8 @@ generateKitchenOrder: (orderId) => {
         </div>
       `;
     }
-    // Opções para Churrasco Misto (ID 101)
-    else if (productId === "101") {
+
+    else if (productId === "105") {
       basePrice = 12.00;
       
       optionsHtml = `
@@ -4267,53 +4609,6 @@ generateKitchenOrder: (orderId) => {
           </div>
           `}
           <div class="max-selection">Selecione uma opção</div>
-        </div>
-        
-        <div class="option-section" id="carnes-section">
-          <div class="option-section-title">Carnes <span class="required-option">*</span></div>
-          <div class="option-item">
-            <label>
-              <input type="checkbox" name="carnes" value="Coração de galinha" data-max="2">
-              Coração de galinha
-            </label>
-          </div>
-          <div class="option-item">
-            <label>
-              <input type="checkbox" name="carnes" value="Costelinha de porco" data-max="2">
-              Costelinha de porco
-            </label>
-          </div>
-          <div class="option-item">
-            <label>
-              <input type="checkbox" name="carnes" value="Filé de frango" data-max="2">
-              Filé de frango
-            </label>
-          </div>
-          <div class="option-item">
-            <label>
-              <input type="checkbox" name="carnes" value="Linguiça" data-max="2">
-              Linguiça
-            </label>
-          </div>
-          <div class="option-item">
-            <label>
-              <input type="checkbox" name="carnes" value="Maminha (Exclusiva +1€)" data-additional-price="1" data-exclusive>
-              Maminha (Exclusiva) <span class="additional-price">+€1,00</span>
-            </label>
-          </div>
-          <div class="option-item">
-            <label>
-              <input type="checkbox" name="carnes" value="Maminha (combinada)">
-              Maminha (Combinada)
-            </label>
-          </div>
-          <div class="option-item">
-            <label>
-              <input type="checkbox" name="carnes" value="Torresmo" data-max="2">
-              Torresmo
-            </label>
-          </div>
-          <div class="max-selection" id="max-carnes">Escolha até 2 carnes (ou 1 Maminha Exclusiva)</div>
         </div>
         
         <div class="option-section">
@@ -4398,60 +4693,324 @@ generateKitchenOrder: (orderId) => {
         </div>
       `;
     }
+    // Opções para Churrasco Misto (ID 101)
+    else if (productId === "101") {
+  basePrice = 12.00;
+  
+  optionsHtml = `
+    <div class="option-section">
+      <div class="option-section-title">Feijão <span class="required-option">*</span></div>
+      <div class="option-item">
+        <label>
+          <input type="radio" name="feijao" value="Feijão de caldo" required>
+          Feijão de caldo
+        </label>
+      </div>
+      <div class="option-item">
+        <label>
+          <input type="radio" name="feijao" value="Feijão tropeiro" required>
+          Feijão tropeiro
+        </label>
+      </div>
+    </div>
+    
+    <div class="option-section">
+      <div class="option-section-title">Acompanhamentos<span class="required-option">*</span></div>
+      <div class="option-item">
+        <label>
+          <input type="radio" name="acompanhamento" value="Banana frita" required>
+          Banana frita
+        </label>
+      </div>
+      ${mandiocaCozidaAvailable ? `
+      <div class="option-item">
+        <label>
+          <input type="radio" name="acompanhamento" value="Mandioca cozida" required>
+          Mandioca cozida
+        </label>
+      </div>
+      ` : `
+      <div class="option-item disabled">
+        <label>
+          <input type="radio" name="acompanhamento" value="Mandioca cozida" disabled>
+          Mandioca cozida
+        </label>
+      </div>
+      `}
+      ${mandiocaFritaAvailable ? `
+      <div class="option-item">
+        <label>
+          <input type="radio" name="acompanhamento" value="Mandioca frita" required>
+          Mandioca frita
+        </label>
+      </div>
+      ` : `
+      <div class="option-item disabled">
+        <label>
+          <input type="radio" name="acompanhamento" value="Mandioca frita" disabled>
+          Mandioca frita
+        </label>
+      </div>
+      `}
+      <div class="max-selection" id="max-carnes">Escolha até 2 carnes ou apenas Maminha</div>
+    </div>
+    
+    <div class="option-section" id="carnes-section">
+      <div class="option-item">
+        <label>
+          <input type="checkbox" name="carnes" value="Coração de galinha" data-max="2">
+          Coração de galinha
+        </label>
+      </div>
+      <div class="option-item">
+        <label>
+          <input type="checkbox" name="carnes" value="Costelinha de porco" data-max="2">
+          Costelinha de porco
+        </label>
+      </div>
+      <div class="option-item">
+        <label>
+          <input type="checkbox" name="carnes" value="Filé de frango" data-max="2">
+          Filé de frango
+        </label>
+      </div>
+      <div class="option-item">
+        <label>
+          <input type="checkbox" name="carnes" value="Linguiça" data-max="2">
+          Linguiça
+        </label>
+      </div>
+      <div class="option-item">
+        <label>
+          <input type="checkbox" name="carnes" value="Maminha (Exclusiva +1€)" data-additional-price="1" data-exclusive>
+           Só Maminha <span class="additional-price">+€1,00</span>
+        </label>
+      </div>
+      <div class="option-item">
+        <label>
+          <input type="checkbox" name="carnes" value="Maminha">
+          Maminha (Combinada)
+        </label>
+      </div>
+      <div class="option-item">
+        <label>
+          <input type="checkbox" name="carnes" value="Torresmo" data-max="2">
+          Torresmo
+        </label>
+      </div>
+    </div>
+    
+      <!-- Nova seção para ponto da carne -->
+    <div class="option-section" id="ponto-carne-section">
+      <div class="option-section-title">Ponto da Carne <span class="required-option">*</span></div>
+      <div class="option-item">
+        <label>
+          <input type="radio" name="ponto_carne" value="Selada" required>
+          Selada
+        </label>
+      </div>
+      <div class="option-item">
+        <label>
+          <input type="radio" name="ponto_carne" value="Mal passada" required>
+          Mal passada
+        </label>
+      </div>
+      <div class="option-item">
+        <label>
+          <input type="radio" name="ponto_carne" value="Ao ponto" required checked>
+          Ao ponto
+        </label>
+      </div>
+      <div class="option-item">
+        <label>
+          <input type="radio" name="ponto_carne" value="Ao ponto para bem" required>
+          Ao ponto para bem
+        </label>
+      </div>
+      <div class="option-item">
+        <label>
+          <input type="radio" name="ponto_carne" value="Bem passado" required>
+          Bem passado
+        </label>
+      </div>
+          <div class="option-item">
+      <label>
+        <input type="radio" name="ponto_carne" value="Indiferente">
+        Indiferente
+      </label>
+</div>
+
+    </div>
+    
+    <div class="option-section">
+      <div class="option-section-title">Salada <span class="required-option">*</span></div>
+      <div class="option-item">
+        <label>
+          <input type="radio" name="salada" value="Salada mista" required>
+          Salada mista
+        </label>
+      </div>
+      <div class="option-item">
+        <label>
+          <input type="radio" name="salada" value="Vinagrete" required>
+          Vinagrete
+        </label>
+      </div>
+      <div class="option-item">
+        <label>
+          <input type="radio" name="salada" value="Não quero salada" required>
+          Não quero salada
+        </label>
+      </div>
+    </div>
+    
+    <div class="option-section">
+      <div class="option-section-title">Bebida</div>
+      <div class="option-item">
+        <label>
+          <input type="radio" name="bebida" value="Sem bebida" checked>
+          Sem bebida
+        </label>
+      </div>
+      <div class="option-item">
+        <label>
+          <input type="radio" name="bebida" value="Água sem gás 500ml" data-additional-price="1">
+          Água sem gás 500ml <span class="additional-price">+€1,00</span>
+        </label>
+      </div>
+      <div class="option-item">
+        <label>
+          <input type="radio" name="bebida" value="Água com gás Castelo" data-additional-price="1.5">
+          Água com gás Castelo <span class="additional-price">+€1,50</span>
+        </label>
+      </div>
+      <div class="option-item">
+        <label>
+          <input type="radio" name="bebida" value="Água com gás Pedras 500ml" data-additional-price="1.5">
+          Água com gás Pedras 500ml <span class="additional-price">+€1,50</span>
+        </label>
+      </div>
+      <div class="option-item">
+        <label>
+          <input type="radio" name="bebida" value="Coca-Cola" data-additional-price="2">
+          Coca-Cola <span class="additional-price">+€2,00</span>
+        </label>
+      </div>
+      <div class="option-item">
+        <label>
+          <input type="radio" name="bebida" value="Coca-Cola Zero" data-additional-price="2">
+          Coca-Cola Zero <span class="additional-price">+€2,00</span>
+        </label>
+      </div>
+      <div class="option-item">
+        <label>
+          <input type="radio" name="bebida" value="Fanta Laranja" data-additional-price="2">
+          Fanta Laranja <span class="additional-price">+€2,00</span>
+        </label>
+      </div>
+      <div class="option-item">
+        <label>
+          <input type="radio" name="bebida" value="Guaraná Antarctica" data-additional-price="2">
+          Guaraná Antarctica <span class="additional-price">+€2,00</span>
+        </label>
+      </div>
+      <div class="option-item">
+        <label>
+          <input type="radio" name="bebida" value="Ice Tea de Manga" data-additional-price="2">
+          Ice Tea de Manga <span class="additional-price">+€2,00</span>
+        </label>
+      </div>
+    </div>
+  `;
+    }
     // Opções para X-Salada (ID 201)
     else if (productId === "201") {
       basePrice = 6.50;
       
       optionsHtml = `
-        <div class="option-section">
-          <div class="option-section-title">Adicionais</div>
-          <div class="option-item">
-            <label>
-              <input type="checkbox" name="adicionais" value="Bacon" data-additional-price="1.5">
-              Bacon <span class="additional-price">+€1,50</span>
-            </label>
-          </div>
-          <div class="option-item">
-            <label>
-              <input type="checkbox" name="adicionais" value="Queijo extra" data-additional-price="1">
-              Queijo extra <span class="additional-price">+€1,00</span>
-            </label>
-          </div>
-          <div class="option-item">
-            <label>
-              <input type="checkbox" name="adicionais" value="Ovo" data-additional-price="0.5">
-              Ovo <span class="additional-price">+€0,50</span>
-            </label>
-          </div>
+      <div class="option-section">
+        <div class="option-section-title">Bebidas</div>
+
+        <div class="option-item">
+          <label>
+            <input type="radio" name="bebida" value="Sem bebida" checked>
+            Sem bebida
+          </label>
         </div>
-        
-        <div class="option-section">
-          <div class="option-section-title">Remover Ingredientes</div>
-          <div class="option-item">
-            <label>
-              <input type="checkbox" name="remover" value="Sem cebola">
-              Sem cebola
-            </label>
-          </div>
-          <div class="option-item">
-            <label>
-              <input type="checkbox" name="remover" value="Sem tomate">
-              Sem tomate
-            </label>
-          </div>
-          <div class="option-item">
-            <label>
-              <input type="checkbox" name="remover" value="Sem alface">
-              Sem alface
-            </label>
-          </div>
-          <div class="option-item">
-            <label>
-              <input type="checkbox" name="remover" value="Sem maionese">
-              Sem maionese
-            </label>
-          </div>
+        <div class="option-item">
+          <label>
+            <input type="radio" name="bebida" value="Água sem gás 500ml" data-additional-price="1">
+            Água sem gás 500ml <span class="additional-price">+€1,00</span>
+          </label>
         </div>
+        <div class="option-item">
+          <label>
+            <input type="radio" name="bebida" value="Água com gás Castelo" data-additional-price="1.5">
+            Água com gás Castelo <span class="additional-price">+€1,50</span>
+          </label>
+        </div>
+        <div class="option-item">
+          <label>
+            <input type="radio" name="bebida" value="Água com gás Pedras 500ml" data-additional-price="1.5">
+            Água com gás Pedras 500ml <span class="additional-price">+€1,50</span>
+          </label>
+        </div>
+        <div class="option-item">
+          <label>
+            <input type="radio" name="bebida" value="Coca-Cola" data-additional-price="2">
+            Coca-Cola <span class="additional-price">+€2,00</span>
+          </label>
+        </div>
+        <div class="option-item">
+          <label>
+            <input type="radio" name="bebida" value="Coca-Cola Zero" data-additional-price="2">
+            Coca-Cola Zero <span class="additional-price">+€2,00</span>
+          </label>
+        </div>
+        <div class="option-item">
+          <label>
+            <input type="radio" name="bebida" value="Fanta Laranja" data-additional-price="2">
+            Fanta Laranja <span class="additional-price">+€2,00</span>
+          </label>
+        </div>
+        <div class="option-item">
+          <label>
+            <input type="radio" name="bebida" value="Guaraná Antarctica" data-additional-price="2">
+            Guaraná Antarctica <span class="additional-price">+€2,00</span>
+          </label>
+        </div>
+        <div class="option-item">
+          <label>
+            <input type="radio" name="bebida" value="Ice Tea de Manga" data-additional-price="2">
+            Ice Tea de Manga <span class="additional-price">+€2,00</span>
+          </label>
+        </div>
+      </div>
+
+      <div class="option-section">
+        <div class="option-section-title">Adicionais</div>
+
+        <div class="option-item">
+          <label>
+            <input type="checkbox" name="adicionais" value="Bacon" data-additional-price="1.5">
+            Bacon <span class="additional-price">+€1,50</span>
+          </label>
+        </div>
+
+        <div class="option-item">
+          <label>
+            <input type="checkbox" name="adicionais" value="Queijo extra" data-additional-price="1">
+            Queijo extra <span class="additional-price">+€1,00</span>
+          </label>
+        </div>
+
+        <div class="option-item">
+          <label>
+            <input type="checkbox" name="adicionais" value="Ovo" data-additional-price="0.5">
+            Ovo <span class="additional-price">+€0,50</span>
+          </label>
+        </div>
+      </div>
       `;
     }
     // Opções para X-Bacon (ID 202)
@@ -4459,49 +5018,89 @@ generateKitchenOrder: (orderId) => {
       basePrice = 8.00;
       
       optionsHtml = `
-        <div class="option-section">
-          <div class="option-section-title">Adicionais</div>
-          <div class="option-item">
-            <label>
-              <input type="checkbox" name="adicionais" value="Queijo extra" data-additional-price="1">
-              Queijo extra <span class="additional-price">+€1,00</span>
-            </label>
-          </div>
-          <div class="option-item">
-            <label>
-              <input type="checkbox" name="adicionais" value="Ovo" data-additional-price="0.5">
-              Ovo <span class="additional-price">+€0,50</span>
-            </label>
-          </div>
+      <div class="option-section">
+        <div class="option-section-title">Bebidas</div>
+
+        <div class="option-item">
+          <label>
+            <input type="radio" name="bebida" value="Sem bebida" checked>
+            Sem bebida
+          </label>
         </div>
-        
-        <div class="option-section">
-          <div class="option-section-title">Remover Ingredientes</div>
-          <div class="option-item">
-            <label>
-              <input type="checkbox" name="remover" value="Sem cebola">
-              Sem cebola
-            </label>
-          </div>
-          <div class="option-item">
-            <label>
-              <input type="checkbox" name="remover" value="Sem tomate">
-              Sem tomate
-            </label>
-          </div>
-          <div class="option-item">
-            <label>
-              <input type="checkbox" name="remover" value="Sem alface">
-              Sem alface
-            </label>
-          </div>
-          <div class="option-item">
-            <label>
-              <input type="checkbox" name="remover" value="Sem maionese">
-              Sem maionese
-            </label>
-          </div>
+        <div class="option-item">
+          <label>
+            <input type="radio" name="bebida" value="Água sem gás 500ml" data-additional-price="1">
+            Água sem gás 500ml <span class="additional-price">+€1,00</span>
+          </label>
         </div>
+        <div class="option-item">
+          <label>
+            <input type="radio" name="bebida" value="Água com gás Castelo" data-additional-price="1.5">
+            Água com gás Castelo <span class="additional-price">+€1,50</span>
+          </label>
+        </div>
+        <div class="option-item">
+          <label>
+            <input type="radio" name="bebida" value="Água com gás Pedras 500ml" data-additional-price="1.5">
+            Água com gás Pedras 500ml <span class="additional-price">+€1,50</span>
+          </label>
+        </div>
+        <div class="option-item">
+          <label>
+            <input type="radio" name="bebida" value="Coca-Cola" data-additional-price="2">
+            Coca-Cola <span class="additional-price">+€2,00</span>
+          </label>
+        </div>
+        <div class="option-item">
+          <label>
+            <input type="radio" name="bebida" value="Coca-Cola Zero" data-additional-price="2">
+            Coca-Cola Zero <span class="additional-price">+€2,00</span>
+          </label>
+        </div>
+        <div class="option-item">
+          <label>
+            <input type="radio" name="bebida" value="Fanta Laranja" data-additional-price="2">
+            Fanta Laranja <span class="additional-price">+€2,00</span>
+          </label>
+        </div>
+        <div class="option-item">
+          <label>
+            <input type="radio" name="bebida" value="Guaraná Antarctica" data-additional-price="2">
+            Guaraná Antarctica <span class="additional-price">+€2,00</span>
+          </label>
+        </div>
+        <div class="option-item">
+          <label>
+            <input type="radio" name="bebida" value="Ice Tea de Manga" data-additional-price="2">
+            Ice Tea de Manga <span class="additional-price">+€2,00</span>
+          </label>
+        </div>
+      </div>
+
+      <div class="option-section">
+        <div class="option-section-title">Adicionais</div>
+
+        <div class="option-item">
+          <label>
+            <input type="checkbox" name="adicionais" value="Bacon" data-additional-price="1.5">
+            Bacon <span class="additional-price">+€1,50</span>
+          </label>
+        </div>
+
+        <div class="option-item">
+          <label>
+            <input type="checkbox" name="adicionais" value="Queijo extra" data-additional-price="1">
+            Queijo extra <span class="additional-price">+€1,00</span>
+          </label>
+        </div>
+
+        <div class="option-item">
+          <label>
+            <input type="checkbox" name="adicionais" value="Ovo" data-additional-price="0.5">
+            Ovo <span class="additional-price">+€0,50</span>
+          </label>
+        </div>
+      </div>
       `;
     }
     // Opções para X-Frango (ID 203)
@@ -4509,185 +5108,271 @@ generateKitchenOrder: (orderId) => {
       basePrice = 8.00;
       
       optionsHtml = `
-        <div class="option-section">
-          <div class="option-section-title">Adicionais</div>
-          <div class="option-item">
-            <label>
-              <input type="checkbox" name="adicionais" value="Bacon" data-additional-price="1.5">
-              Bacon <span class="additional-price">+€1,50</span>
-            </label>
-          </div>
-          <div class="option-item">
-            <label>
-              <input type="checkbox" name="adicionais" value="Queijo extra" data-additional-price="1">
-              Queijo extra <span class="additional-price">+€1,00</span>
-            </label>
-          </div>
-          <div class="option-item">
-            <label>
-              <input type="checkbox" name="adicionais" value="Ovo" data-additional-price="0.5">
-              Ovo <span class="additional-price">+€0,50</span>
-            </label>
-          </div>
+      <div class="option-section">
+        <div class="option-section-title">Bebidas</div>
+
+        <div class="option-item">
+          <label>
+            <input type="radio" name="bebida" value="Sem bebida" checked>
+            Sem bebida
+          </label>
         </div>
-        
-        <div class="option-section">
-          <div class="option-section-title">Remover Ingredientes</div>
-          <div class="option-item">
-            <label>
-              <input type="checkbox" name="remover" value="Sem cebola">
-              Sem cebola
-            </label>
-          </div>
-          <div class="option-item">
-            <label>
-              <input type="checkbox" name="remover" value="Sem tomate">
-              Sem tomate
-            </label>
-          </div>
-          <div class="option-item">
-            <label>
-              <input type="checkbox" name="remover" value="Sem alface">
-              Sem alface
-            </label>
-          </div>
-          <div class="option-item">
-            <label>
-              <input type="checkbox" name="remover" value="Sem maionese">
-              Sem maionese
-            </label>
-          </div>
+        <div class="option-item">
+          <label>
+            <input type="radio" name="bebida" value="Água sem gás 500ml" data-additional-price="1">
+            Água sem gás 500ml <span class="additional-price">+€1,00</span>
+          </label>
         </div>
+        <div class="option-item">
+          <label>
+            <input type="radio" name="bebida" value="Água com gás Castelo" data-additional-price="1.5">
+            Água com gás Castelo <span class="additional-price">+€1,50</span>
+          </label>
+        </div>
+        <div class="option-item">
+          <label>
+            <input type="radio" name="bebida" value="Água com gás Pedras 500ml" data-additional-price="1.5">
+            Água com gás Pedras 500ml <span class="additional-price">+€1,50</span>
+          </label>
+        </div>
+        <div class="option-item">
+          <label>
+            <input type="radio" name="bebida" value="Coca-Cola" data-additional-price="2">
+            Coca-Cola <span class="additional-price">+€2,00</span>
+          </label>
+        </div>
+        <div class="option-item">
+          <label>
+            <input type="radio" name="bebida" value="Coca-Cola Zero" data-additional-price="2">
+            Coca-Cola Zero <span class="additional-price">+€2,00</span>
+          </label>
+        </div>
+        <div class="option-item">
+          <label>
+            <input type="radio" name="bebida" value="Fanta Laranja" data-additional-price="2">
+            Fanta Laranja <span class="additional-price">+€2,00</span>
+          </label>
+        </div>
+        <div class="option-item">
+          <label>
+            <input type="radio" name="bebida" value="Guaraná Antarctica" data-additional-price="2">
+            Guaraná Antarctica <span class="additional-price">+€2,00</span>
+          </label>
+        </div>
+        <div class="option-item">
+          <label>
+            <input type="radio" name="bebida" value="Ice Tea de Manga" data-additional-price="2">
+            Ice Tea de Manga <span class="additional-price">+€2,00</span>
+          </label>
+        </div>
+      </div>
+
+      <div class="option-section">
+        <div class="option-section-title">Adicionais</div>
+
+        <div class="option-item">
+          <label>
+            <input type="checkbox" name="adicionais" value="Bacon" data-additional-price="1.5">
+            Bacon <span class="additional-price">+€1,50</span>
+          </label>
+        </div>
+
+        <div class="option-item">
+          <label>
+            <input type="checkbox" name="adicionais" value="Queijo extra" data-additional-price="1">
+            Queijo extra <span class="additional-price">+€1,00</span>
+          </label>
+        </div>
+
+        <div class="option-item">
+          <label>
+            <input type="checkbox" name="adicionais" value="Ovo" data-additional-price="0.5">
+            Ovo <span class="additional-price">+€0,50</span>
+          </label>
+        </div>
+      </div>
       `;
     }
-    // Opções para Combo Frango Supreme (ID 301)
-    else if (productId === "301") {
-      basePrice = 10.00;
+    else if (productId === "204") {
+      basePrice = 7.00;
       
       optionsHtml = `
-        <div class="option-section">
-          <div class="option-section-title">Bebidas</div>
-          <div class="option-item">
-            <label>
-              <input type="radio" name="bebida_combo" value="Sem bebida">
-              Sem bebida
-            </label>
-          </div>
-          <div class="option-item">
-            <label>
-              <input type="radio" name="bebida_combo" value="Água sem gás 500ml" checked>
-              Água sem gás 500ml
-            </label>
-          </div>
-          <div class="option-item">
-            <label>
-              <input type="radio" name="bebida_combo" value="Água com gás Castelo">
-              Água com gás Castelo
-            </label>
-          </div>
-          <div class="option-item">
-            <label>
-              <input type="radio" name="bebida_combo" value="Água com gás Pedras 500ml">
-              Água com gás Pedras 500ml
-            </label>
-          </div>
-          <div class="option-item">
-            <label>
-              <input type="radio" name="bebida_combo" value="Coca-Cola">
-              Coca-Cola
-            </label>
-          </div>
-          <div class="option-item">
-            <label>
-              <input type="radio" name="bebida_combo" value="Coca-Cola Zero">
-              Coca-Cola Zero
-            </label>
-          </div>
-          <div class="option-item">
-            <label>
-              <input type="radio" name="bebida_combo" value="Fanta Laranja">
-              Fanta Laranja
-            </label>
-          </div>
-          <div class="option-item">
-            <label>
-              <input type="radio" name="bebida_combo" value="Guaraná Antarctica">
-              Guaraná Antarctica
-            </label>
-          </div>
-          <div class="option-item">
-            <label>
-              <input type="radio" name="bebida_combo" value="Ice Tea de Manga">
-              Ice Tea de Manga
-            </label>
-          </div>
+      <div class="option-section">
+        <div class="option-section-title">Bebidas</div>
+
+        <div class="option-item">
+          <label>
+            <input type="radio" name="bebida" value="Sem bebida" checked>
+            Sem bebida
+          </label>
         </div>
+        <div class="option-item">
+          <label>
+            <input type="radio" name="bebida" value="Água sem gás 500ml" data-additional-price="1">
+            Água sem gás 500ml <span class="additional-price">+€1,00</span>
+          </label>
+        </div>
+        <div class="option-item">
+          <label>
+            <input type="radio" name="bebida" value="Água com gás Castelo" data-additional-price="1.5">
+            Água com gás Castelo <span class="additional-price">+€1,50</span>
+          </label>
+        </div>
+        <div class="option-item">
+          <label>
+            <input type="radio" name="bebida" value="Água com gás Pedras 500ml" data-additional-price="1.5">
+            Água com gás Pedras 500ml <span class="additional-price">+€1,50</span>
+          </label>
+        </div>
+        <div class="option-item">
+          <label>
+            <input type="radio" name="bebida" value="Coca-Cola" data-additional-price="2">
+            Coca-Cola <span class="additional-price">+€2,00</span>
+          </label>
+        </div>
+        <div class="option-item">
+          <label>
+            <input type="radio" name="bebida" value="Coca-Cola Zero" data-additional-price="2">
+            Coca-Cola Zero <span class="additional-price">+€2,00</span>
+          </label>
+        </div>
+        <div class="option-item">
+          <label>
+            <input type="radio" name="bebida" value="Fanta Laranja" data-additional-price="2">
+            Fanta Laranja <span class="additional-price">+€2,00</span>
+          </label>
+        </div>
+        <div class="option-item">
+          <label>
+            <input type="radio" name="bebida" value="Guaraná Antarctica" data-additional-price="2">
+            Guaraná Antarctica <span class="additional-price">+€2,00</span>
+          </label>
+        </div>
+        <div class="option-item">
+          <label>
+            <input type="radio" name="bebida" value="Ice Tea de Manga" data-additional-price="2">
+            Ice Tea de Manga <span class="additional-price">+€2,00</span>
+          </label>
+        </div>
+      </div>
+
+      <div class="option-section">
+        <div class="option-section-title">Adicionais</div>
+
+        <div class="option-item">
+          <label>
+            <input type="checkbox" name="adicionais" value="Bacon" data-additional-price="1.5">
+            Bacon <span class="additional-price">+€1,50</span>
+          </label>
+        </div>
+
+        <div class="option-item">
+          <label>
+            <input type="checkbox" name="adicionais" value="Queijo extra" data-additional-price="1">
+            Queijo extra <span class="additional-price">+€1,00</span>
+          </label>
+        </div>
+
+        <div class="option-item">
+          <label>
+            <input type="checkbox" name="adicionais" value="Ovo" data-additional-price="0.5">
+            Ovo <span class="additional-price">+€0,50</span>
+          </label>
+        </div>
+      </div>
       `;
     }
-    // Opções para Combo X-Tudo (ID 302)
-    else if (productId === "302") {
-      basePrice = 12.00;
+    else if (productId === "205") {
+      basePrice = 9.00;
       
       optionsHtml = `
-        <div class="option-section">
-          <div class="option-section-title">Bebidas</div>
-          <div class="option-item">
-            <label>
-              <input type="radio" name="bebida_combo" value="Sem bebida">
-              Sem bebida
-            </label>
-          </div>
-          <div class="option-item">
-            <label>
-              <input type="radio" name="bebida_combo" value="Água sem gás 500ml" checked>
-              Água sem gás 500ml
-            </label>
-          </div>
-          <div class="option-item">
-            <label>
-              <input type="radio" name="bebida_combo" value="Água com gás Castelo">
-              Água com gás Castelo
-            </label>
-          </div>
-          <div class="option-item">
-            <label>
-              <input type="radio" name="bebida_combo" value="Água com gás Pedras 500ml">
-              Água com gás Pedras 500ml
-            </label>
-          </div>
-          <div class="option-item">
-            <label>
-              <input type="radio" name="bebida_combo" value="Coca-Cola">
-              Coca-Cola
-            </label>
-          </div>
-          <div class="option-item">
-            <label>
-              <input type="radio" name="bebida_combo" value="Coca-Cola Zero">
-              Coca-Cola Zero
-            </label>
-          </div>
-          <div class="option-item">
-            <label>
-              <input type="radio" name="bebida_combo" value="Fanta Laranja">
-              Fanta Laranja
-            </label>
-          </div>
-          <div class="option-item">
-            <label>
-              <input type="radio" name="bebida_combo" value="Guaraná Antarctica">
-              Guaraná Antarctica
-            </label>
-          </div>
-          <div class="option-item">
-            <label>
-              <input type="radio" name="bebida_combo" value="Ice Tea de Manga">
-              Ice Tea de Manga
-            </label>
-          </div>
+      <div class="option-section">
+        <div class="option-section-title">Bebidas</div>
+
+        <div class="option-item">
+          <label>
+            <input type="radio" name="bebida" value="Sem bebida" checked>
+            Sem bebida
+          </label>
         </div>
+        <div class="option-item">
+          <label>
+            <input type="radio" name="bebida" value="Água sem gás 500ml" data-additional-price="1">
+            Água sem gás 500ml <span class="additional-price">+€1,00</span>
+          </label>
+        </div>
+        <div class="option-item">
+          <label>
+            <input type="radio" name="bebida" value="Água com gás Castelo" data-additional-price="1.5">
+            Água com gás Castelo <span class="additional-price">+€1,50</span>
+          </label>
+        </div>
+        <div class="option-item">
+          <label>
+            <input type="radio" name="bebida" value="Água com gás Pedras 500ml" data-additional-price="1.5">
+            Água com gás Pedras 500ml <span class="additional-price">+€1,50</span>
+          </label>
+        </div>
+        <div class="option-item">
+          <label>
+            <input type="radio" name="bebida" value="Coca-Cola" data-additional-price="2">
+            Coca-Cola <span class="additional-price">+€2,00</span>
+          </label>
+        </div>
+        <div class="option-item">
+          <label>
+            <input type="radio" name="bebida" value="Coca-Cola Zero" data-additional-price="2">
+            Coca-Cola Zero <span class="additional-price">+€2,00</span>
+          </label>
+        </div>
+        <div class="option-item">
+          <label>
+            <input type="radio" name="bebida" value="Fanta Laranja" data-additional-price="2">
+            Fanta Laranja <span class="additional-price">+€2,00</span>
+          </label>
+        </div>
+        <div class="option-item">
+          <label>
+            <input type="radio" name="bebida" value="Guaraná Antarctica" data-additional-price="2">
+            Guaraná Antarctica <span class="additional-price">+€2,00</span>
+          </label>
+        </div>
+        <div class="option-item">
+          <label>
+            <input type="radio" name="bebida" value="Ice Tea de Manga" data-additional-price="2">
+            Ice Tea de Manga <span class="additional-price">+€2,00</span>
+          </label>
+        </div>
+      </div>
+
+      <div class="option-section">
+        <div class="option-section-title">Adicionais</div>
+
+        <div class="option-item">
+          <label>
+            <input type="checkbox" name="adicionais" value="Bacon" data-additional-price="1.5">
+            Bacon <span class="additional-price">+€1,50</span>
+          </label>
+        </div>
+
+        <div class="option-item">
+          <label>
+            <input type="checkbox" name="adicionais" value="Queijo extra" data-additional-price="1">
+            Queijo extra <span class="additional-price">+€1,00</span>
+          </label>
+        </div>
+
+        <div class="option-item">
+          <label>
+            <input type="checkbox" name="adicionais" value="Ovo" data-additional-price="0.5">
+            Ovo <span class="additional-price">+€0,50</span>
+          </label>
+        </div>
+      </div>
       `;
     }
+   
+   
     // Opções para Porção de Arroz (ID 401)
     else if (productId === "401") {
       basePrice = 3.00;
@@ -4807,49 +5492,98 @@ generateKitchenOrder: (orderId) => {
     }
     // Opções para Porção de Carnes (ID 406)
     else if (productId === "406") {
-      basePrice = 10.00;
-      
-      optionsHtml = `
-        <div class="option-section">
-          <div class="option-section-title">Carnes</div>
-          <div class="option-item">
-            <label>
-              <input type="checkbox" name="carnes" value="Coração de galinha">
-              Coração de galinha
-            </label>
-          </div>
-          <div class="option-item">
-            <label>
-              <input type="checkbox" name="carnes" value="Costelinha de porco">
-              Costelinha de porco
-            </label>
-          </div>
-          <div class="option-item">
-            <label>
-              <input type="checkbox" name="carnes" value="Filé de frango">
-              Filé de frango
-            </label>
-          </div>
-          <div class="option-item">
-            <label>
-              <input type="checkbox" name="carnes" value="Linguiça">
-              Linguiça
-            </label>
-          </div>
-          <div class="option-item">
-            <label>
-              <input type="checkbox" name="carnes" value="Maminha (+2€)" data-additional-price="2">
-              Maminha <span class="additional-price">+€2,00</span>
-            </label>
-          </div>
-          <div class="option-item">
-            <label>
-              <input type="checkbox" name="carnes" value="Torresmo">
-              Torresmo
-            </label>
-          </div>
-        </div>
-      `;
+  basePrice = 10.00;
+  
+  optionsHtml = `
+    <div class="option-section" id="carnes-section">
+      <div class="option-section-title">Carnes <span class="required-option">*</span></div>
+      <div class="option-item">
+        <label>
+          <input type="checkbox" name="carnes" value="Coração de galinha" data-max="2">
+          Coração de galinha
+        </label>
+      </div>
+      <div class="option-item">
+        <label>
+          <input type="checkbox" name="carnes" value="Costelinha de porco" data-max="2">
+          Costelinha de porco
+        </label>
+      </div>
+      <div class="option-item">
+        <label>
+          <input type="checkbox" name="carnes" value="Filé de frango" data-max="2">
+          Filé de frango
+        </label>
+      </div>
+      <div class="option-item">
+        <label>
+          <input type="checkbox" name="carnes" value="Linguiça" data-max="2">
+          Linguiça
+        </label>
+      </div>
+      <div class="option-item">
+        <label>
+          <input type="checkbox" name="carnes" value="Maminha (Exclusiva +1€)" data-additional-price="1" data-exclusive>
+          Maminha (Exclusiva) <span class="additional-price">+€1,00</span>
+        </label>
+      </div>
+      <div class="option-item">
+        <label>
+          <input type="checkbox" name="carnes" value="Maminha (combinada)">
+          Maminha (Combinada)
+        </label>
+      </div>
+      <div class="option-item">
+        <label>
+          <input type="checkbox" name="carnes" value="Torresmo" data-max="2">
+          Torresmo
+        </label>
+      </div>
+      <div class="max-selection" id="max-carnes">Escolha até 2 carnes (ou 1 Maminha Exclusiva)</div>
+    </div>
+    
+      <!-- Nova seção para ponto da carne -->
+    <div class="option-section" id="ponto-carne-section">
+      <div class="option-section-title">Ponto da Carne <span class="required-option">*</span></div>
+      <div class="option-item">
+        <label>
+          <input type="radio" name="ponto_carne" value="Selada" required>
+          Selada
+        </label>
+      </div>
+      <div class="option-item">
+        <label>
+          <input type="radio" name="ponto_carne" value="Mal passada" required>
+          Mal passada
+        </label>
+      </div>
+      <div class="option-item">
+        <label>
+          <input type="radio" name="ponto_carne" value="Ao ponto" required checked>
+          Ao ponto
+        </label>
+      </div>
+      <div class="option-item">
+        <label>
+          <input type="radio" name="ponto_carne" value="Ao ponto para bem" required>
+          Ao ponto para bem
+        </label>
+      </div>
+      <div class="option-item">
+        <label>
+          <input type="radio" name="ponto_carne" value="Bem passado" required>
+          Bem passado
+        </label>
+      </div>
+      <div class="option-item">
+      <label>
+        <input type="radio" name="ponto_carne" value="Indiferente">
+        Ponto da carne: Indiferente
+      </label>
+      </div>
+
+    </div>
+  `;
     }
     // Opções para Bebidas (Refrigerantes e Águas - ID 5021)
     else if (isBebidaItem) {
@@ -5138,84 +5872,82 @@ generateKitchenOrder: (orderId) => {
         });
       }
 
-      // Controle para carnes no churrasco misto (ID 101)
-      if (productId === "101") {
-        const carnesCheckboxes = document.querySelectorAll('#carnes-section input[type="checkbox"]');
-        const maxCarnesMessage = document.getElementById('max-carnes');
-        
-        carnesCheckboxes.forEach(checkbox => {
-          checkbox.addEventListener('change', function() {
-            const isExclusive = this.hasAttribute('data-exclusive');
-            const isCombinableMaminha = this.value.includes("(combinada)");
-            const checkedCount = Array.from(carnesCheckboxes)
-              .filter(cb => cb.checked && !cb.hasAttribute('data-exclusive') && !cb.value.includes("(combinada)")).length;
-            
-            // Se selecionou Maminha Exclusiva
-            if (isExclusive && this.checked) {
-              maxCarnesMessage.textContent = "Maminha Exclusiva selecionada (+€1,00)";
-              carnesCheckboxes.forEach(cb => {
-                if (cb !== this) {
-                  cb.checked = false;
-                  cb.disabled = true;
-                  cb.closest('.option-item').classList.add('disabled');
-                }
-              });
-            } 
-            // Se selecionou Maminha Combinada
-            else if (isCombinableMaminha && this.checked) {
-              maxCarnesMessage.textContent = "Maminha Combinada selecionada - pode escolher mais 1 carne";
-              
-              // Permite selecionar mais 1 carne normal
-              carnesCheckboxes.forEach(cb => {
-                if (!cb.hasAttribute('data-exclusive') && !cb.checked && !cb.value.includes("(combinada)")) {
-                  cb.disabled = false;
-                  cb.closest('.option-item').classList.remove('disabled');
-                }
-              });
-            }
-            // Se selecionou carnes normais
-            else if (this.checked && !isExclusive && !isCombinableMaminha) {
-              const maminhaCombinadaSelected = Array.from(carnesCheckboxes)
-                .some(cb => cb.value.includes("(combinada)") && cb.checked);
-              
-              if (maminhaCombinadaSelected && checkedCount >= 1) {
-                maxCarnesMessage.textContent = "Limite atingido (1 carne + Maminha Combinada)";
-                carnesCheckboxes.forEach(cb => {
-                  if (!cb.checked && !cb.hasAttribute('data-exclusive') && !cb.value.includes("(combinada)")) {
-                    cb.disabled = true;
-                    cb.closest('.option-item').classList.add('disabled');
-                  }
-                });
-              } 
-              else if (!maminhaCombinadaSelected && checkedCount >= 2) {
-                maxCarnesMessage.textContent = "Limite de 2 carnes atingido";
-                carnesCheckboxes.forEach(cb => {
-                  if (!cb.checked && !cb.hasAttribute('data-exclusive') && !cb.value.includes("(combinada)")) {
-                    cb.disabled = true;
-                    cb.closest('.option-item').classList.add('disabled');
-                  }
-                });
-              }
-            }
-            // Se desmarcou algo
-            else if (!this.checked) {
-              const anyChecked = Array.from(carnesCheckboxes).some(cb => cb.checked);
-              
-              if (!anyChecked) {
-                maxCarnesMessage.textContent = "Escolha até 2 carnes (ou 1 Maminha Exclusiva)";
-                carnesCheckboxes.forEach(cb => {
-                  cb.disabled = false;
-                  cb.closest('.option-item').classList.remove('disabled');
-                });
-              }
-            }
-          });
+  
+// Controle para carnes no churrasco misto (ID 101)
+if (productId === "101" || productId === "406" ) {
+  const carnesCheckboxes = document.querySelectorAll('#carnes-section input[type="checkbox"]');
+  const maxCarnesMessage = document.getElementById('max-carnes');
+
+  carnesCheckboxes.forEach(checkbox => {
+    checkbox.addEventListener('change', function () {
+      const isExclusive = this.hasAttribute('data-exclusive');
+
+      if (isExclusive && this.checked) {
+  if (productId === "101") {
+    maxCarnesMessage.textContent = "Maminha Exclusiva selecionada (+€1,00)";
+    currentProductOptions.price += 1.00;
+  } else {
+    maxCarnesMessage.textContent = "Maminha Exclusiva selecionada";
+  }
+
+  carnesCheckboxes.forEach(cb => {
+    if (cb !== this) {
+      cb.checked = false;
+      cb.disabled = true;
+      cb.closest('.option-item')?.classList.add('disabled');
+    }
+  });
+  return;
+}
+
+
+
+
+      // Se desmarcou Maminha Exclusiva
+      if (isExclusive && !this.checked) {
+        maxCarnesMessage.textContent = "Escolha até 2 carnes (ou 1 Maminha Exclusiva)";
+        carnesCheckboxes.forEach(cb => {
+          cb.disabled = false;
+          cb.closest('.option-item')?.classList.remove('disabled');
+        });
+        return;
+      }
+
+      // Contar carnes comuns selecionadas (sem exclusivas)
+      const checkedNormal = Array.from(carnesCheckboxes).filter(cb => cb.checked && !cb.hasAttribute('data-exclusive'));
+
+      if (checkedNormal.length > 2) {
+        this.checked = false;
+        maxCarnesMessage.textContent = "Limite de 2 carnes atingido";
+        return;
+      }
+
+      // Atualizar mensagem com base no número de carnes comuns
+      if (checkedNormal.length === 2) {
+        maxCarnesMessage.textContent = "Limite de 2 carnes atingido";
+        carnesCheckboxes.forEach(cb => {
+          if (!cb.checked && !cb.hasAttribute('data-exclusive')) {
+            cb.disabled = true;
+            cb.closest('.option-item')?.classList.add('disabled');
+          }
+        });
+      } else {
+        maxCarnesMessage.textContent = "Escolha até 2 carnes (ou 1 Maminha Exclusiva)";
+        carnesCheckboxes.forEach(cb => {
+          if (!cb.hasAttribute('data-exclusive')) {
+            cb.disabled = false;
+            cb.closest('.option-item')?.classList.remove('disabled');
+          }
         });
       }
-    }, 100);
-    
-    DOM.productOptionsModal.show();
-  },
+    });
+  });
+}
+
+}, 100);
+
+DOM.productOptionsModal.show();
+},
 
   handleOptionsConfirmation: () => {
     // Validação de campos obrigatórios
@@ -5247,14 +5979,27 @@ generateKitchenOrder: (orderId) => {
     const options = {};
     
     // Lógica específica para Combos
-    if (['301', '302'].includes(currentProductOptions.id)) {
-      const bebidaSelecionada = document.querySelector('input[name="bebida_combo"]:checked');
-      if (bebidaSelecionada && bebidaSelecionada.value !== "Sem bebida") {
-        options["Bebida"] = [bebidaSelecionada.value];
-      }
-    }
+    // Lógica específica para Combos
+if (['301', '302'].includes(currentProductOptions.id)) {
+  const bebidaSelecionada = document.querySelector('input[name="bebida_combo"]:checked');
+  if (bebidaSelecionada && bebidaSelecionada.value !== "Sem bebida") {
+    options["Bebida"] = [bebidaSelecionada.value];
+  }
+
+  // Adicionais (como Bacon, Queijo, Ovo) — com preço
+  const adicionaisSelecionados = document.querySelectorAll('input[name="adicionais"]:checked');
+  if (adicionaisSelecionados.length > 0) {
+    options["Adicionais"] = [];
+    adicionaisSelecionados.forEach(input => {
+      const valor = input.value;
+      const precoExtra = parseFloat(input.getAttribute('data-additional-price') || 0);
+      currentProductOptions.price += precoExtra; // Só adiciona valor dos adicionais
+      options["Adicionais"].push(valor);
+    });
+  }
+}
     // Lógica específica para Açaí
-    else if (['601', '602'].includes(currentProductOptions.id)) {
+    else if (['601', '602',].includes(currentProductOptions.id)) {
       const opcaoCompleta = document.getElementById('açai-completo').checked;
       const acompanhamentos = [];
       
@@ -5361,6 +6106,101 @@ function selectAllAçaiToppings() {
                 }
             }
         }
+          // Adicione na seção de funções do Carrinho
+            clear: () => {
+              cart = [];
+              Cart.updateStorage();
+              Cart.updateUI();
+              Utils.showNotification('Carrinho limpo com sucesso', 'info');
+            }
+         // Modifique a chamada do clear cart no event listener:
+            if (document.getElementById('clear-cart-button')) {
+              document.getElementById('clear-cart-button').addEventListener('click', () => {
+                if (cart.length > 0) {
+                  if (confirm('Tem certeza que deseja limpar todo o carrinho?')) {
+                    Cart.clear();
+                  }
+                } else {
+                  Utils.showNotification('O carrinho já está vazio', 'info');
+                }
+              });
+            }
+
+ // Substitua o conteúdo atual da função setupAdminEventListeners por este:
+function setupAdminEventListeners() {
+    // Delegation para os botões dinâmicos
+    document.addEventListener('click', function(event) {
+        const button = event.target.closest('.update-status, .view-kitchen-order');
+        if (!button || !button.dataset.id) return;
+
+        const orderId = button.dataset.id;
+
+        // Botões de status
+        if (button.classList.contains('update-status') && button.dataset.status) {
+            const newStatus = button.dataset.status;
+            Order.updateStatus(orderId, newStatus);
+            return;
+        }
+
+        // Botão de visualizar comanda
+        if (button.classList.contains('view-kitchen-order')) {
+            // Ativa o botão clicado
+            document.querySelectorAll('.view-kitchen-order').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            button.classList.add('active');
+
+            // Mostra o modal
+            DOM.kitchenOrderContent.innerHTML = Order.generateKitchenOrder(orderId);
+            DOM.kitchenOrderModal.show();
+            return;
+        }
+    });
+
+    // Listener específico para impressão
+    if (DOM.printKitchenOrder) {
+        DOM.printKitchenOrder.addEventListener('click', function() {
+            const activeButton = document.querySelector('.view-kitchen-order.active');
+            if (!activeButton || !activeButton.dataset.id) {
+                Utils.showNotification("Selecione um pedido para imprimir", 'warning');
+                return;
+            }
+            
+            Order.printKitchenOrder(activeButton.dataset.id);
+            DOM.kitchenOrderModal.hide();
+        });
+    }
+}
+
+// E adicione esta chamada no final da função setupEventListeners (dentro dela):
+setupAdminEventListeners();
+document.querySelectorAll('.order-category-header').forEach(header => {
+    header.addEventListener('click', function() {
+        const category = this.closest('.order-category');
+        const body = category.querySelector('.order-category-body');
+        const icon = this.querySelector('.toggle-icon');
+        
+        // Alterna a classe 'show' no body
+        body.classList.toggle('show');
+        
+        // Alterna o ícone entre seta para baixo e para a direita
+        if (body.classList.contains('show')) {
+            icon.classList.remove('fa-chevron-right');
+            icon.classList.add('fa-chevron-down');
+        } else {
+            icon.classList.remove('fa-chevron-down');
+            icon.classList.add('fa-chevron-right');
+        }
+        
+        // Força a atualização do layout
+        body.style.display = body.classList.contains('show') ? 'block' : 'none';
+    });
+});
+
+// Garanta que todos os pedidos estejam visíveis
+document.querySelectorAll('.admin-order-card').forEach(card => {
+    card.style.display = 'block';
+});
 
         // Remover item do carrinho
         if (event.target.closest('.remove-item')) {
@@ -5614,45 +6454,49 @@ document.getElementById('customer-nif')?.addEventListener('keypress', function(e
         });
     }
     
-    // Botões no Painel Admin
-    if (DOM.ordersList) {
-        DOM.ordersList.addEventListener('click', (event) => {
-            if (event.target.closest('.update-status')) {
-                const button = event.target.closest('.update-status');
-                const orderId = button.getAttribute('data-id');
-                const newStatus = button.getAttribute('data-status');
-                Order.updateStatus(orderId, newStatus);
-            }
+// Botões no Painel Admin
+if (DOM.ordersList) {
+    DOM.ordersList.addEventListener('click', (event) => {
+        // Botões de atualização de status
+        if (event.target.closest('.update-status')) {
+            const button = event.target.closest('.update-status');
+            const orderId = button.getAttribute('data-id');
+            const newStatus = button.getAttribute('data-status');
+            Order.updateStatus(orderId, newStatus);
+            return; // Importante para evitar conflitos com outros listeners
+        }
+        
+        // Botão para visualizar/gerar comanda
+        if (event.target.closest('.view-kitchen-order')) {
+            const button = event.target.closest('.view-kitchen-order');
+            const orderId = button.getAttribute('data-id');
             
-            if (event.target.closest('.view-kitchen-order')) {
-                const button = event.target.closest('.view-kitchen-order');
-                const orderId = button.getAttribute('data-id');
-                const kitchenOrder = Order.generateKitchenOrder(orderId);
-                DOM.kitchenOrderContent.innerHTML = kitchenOrder;
-                DOM.kitchenOrderModal.show();
-            }
-        });
-    }
+            // Adiciona classe 'active' para rastrear qual pedido está sendo visualizado
+            document.querySelectorAll('.view-kitchen-order').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            button.classList.add('active');
+            
+            const kitchenOrder = Order.generateKitchenOrder(orderId);
+            DOM.kitchenOrderContent.innerHTML = kitchenOrder;
+            DOM.kitchenOrderModal.show();
+            return;
+        }
+    });
+}
 
-    // Botão Imprimir Pedido
-    if (DOM.printKitchenOrder) {
-        DOM.printKitchenOrder.addEventListener('click', () => {
-            const orderId = document.querySelector('.view-kitchen-order.active')?.getAttribute('data-id') || 
-                            document.querySelector('.view-kitchen-order')?.getAttribute('data-id');
-            if (orderId) {
-                Order.printKitchenOrder(orderId);
-                DOM.kitchenOrderModal.hide();
-            }
-        });
-    }
+// Botão Imprimir Pedido - Esta parte deve estar fora do listener acima
+if (DOM.printKitchenOrder) {
+    DOM.printKitchenOrder.addEventListener('click', () => {
+        const orderId = document.querySelector('.view-kitchen-order.active')?.getAttribute('data-id') || 
+                        document.querySelector('.view-kitchen-order')?.getAttribute('data-id');
+        if (orderId) {
+            Order.printKitchenOrder(orderId);
+            DOM.kitchenOrderModal.hide();
+        }
+    });
+}
     
-    // Botão Aplicar Filtros
-    if (DOM.applyFilters) {
-        DOM.applyFilters.addEventListener('click', () => {
-            Order.updateAdminPanel();
-        });
-    }
-
     // Notificação de Pedidos
     if (DOM.notificationBell) {
         DOM.notificationBell.addEventListener('click', () => {
@@ -5730,46 +6574,58 @@ document.addEventListener('DOMContentLoaded', function() {
   
     // Força a atualização inicial dos estados dos switches
     document.querySelectorAll('.admin-switch-container input[type="checkbox"]').forEach(switchElement => {
-        const productId = switchElement.id.replace('-switch', ''); // Extrai o ID do produto
-        const isAvailable = localStorage.getItem(`product_${productId}_available`) !== 'false'; // Verifica o estado salvo no localStorage
-        switchElement.checked = isAvailable; // Define o estado do switch
-        updateSwitchStyle(switchElement, isAvailable); // Atualiza o estilo visual do switch
-        updateProductDisplay(productId, isAvailable); // Atualiza a exibição do produto com base na disponibilidade
+        const productId = switchElement.id.replace('-switch', '');
+        const isAvailable = localStorage.getItem(`product_${productId}_available`) !== 'false';
+        switchElement.checked = isAvailable;
+        updateSwitchStyle(switchElement, isAvailable);
+        updateProductDisplay(productId, isAvailable);
     });
-  
-    // Verifica e exibe as seções adequadas
+
+    document.querySelectorAll('.order-category-header').forEach(header => {
+        // Adiciona o ícone se não existir
+        if (!header.querySelector('.toggle-icon')) {
+            const icon = document.createElement('i');
+            icon.className = 'fas fa-chevron-right toggle-icon';
+            header.querySelector('h5').appendChild(icon);
+        }
+
+        header.addEventListener('click', function() {
+            const category = this.closest('.order-category');
+            const body = category.querySelector('.order-category-body');
+            const icon = this.querySelector('.toggle-icon');
+            
+            // Alterna a visibilidade
+            const isHidden = body.style.display === 'none';
+            body.style.display = isHidden ? 'block' : 'none';
+            
+            // Alterna o ícone
+            if (isHidden) {
+                icon.classList.replace('fa-chevron-right', 'fa-chevron-down');
+            } else {
+                icon.classList.replace('fa-chevron-down', 'fa-chevron-right');
+            }
+        });
+    });
+
     if (DOM.productSection && DOM.checkoutSection && DOM.adminPanel) {
-        DOM.productSection.classList.remove("d-none"); // Exibe a seção de produtos
-        DOM.checkoutSection.classList.add("d-none"); // Oculta a seção de checkout
-        DOM.adminPanel.classList.add("d-none"); // Oculta o painel administrativo
+        DOM.productSection.classList.remove("d-none");
+        DOM.checkoutSection.classList.add("d-none");
+        DOM.adminPanel.classList.add("d-none");
     }
 
-    // Configura os event listeners
     setupEventListeners();
-    
-    // Atualiza a interface do carrinho
     Cart.updateUI();
-    
-    // Aplica o filtro de produtos
     Filter.apply('all');
-    
-    // Exibe ou oculta os campos de entrega com base no estado do pedido
     Checkout.toggleDeliveryFields(true);
-    
-    // Verifica o status de login do administrador
     Admin.checkLoginStatus();
 
-    // Escuta por novos pedidos no Firebase e atualiza o painel de administração, se necessário
     FirebaseService.listenForOrders((ordersFromFirebase) => {
-        orders = ordersFromFirebase; // Atualiza a lista de pedidos
-        if (isAdminLoggedIn) { // Se o administrador estiver logado, atualiza o painel
+        orders = ordersFromFirebase;
+        if (isAdminLoggedIn) {
             Order.updateAdminPanel();
         }
     });
 });
-
-
-    document.addEventListener('DOMContentLoaded', init);
 
     // Prevenir zoom em inputs em iOS
    document.addEventListener('DOMContentLoaded', function() {
@@ -5788,6 +6644,8 @@ document.addEventListener('DOMContentLoaded', function() {
   // Melhorar toques em botões
   document.addEventListener('touchstart', function() {}, {passive: true});
 });
+
+
   </script>
 </body>
 </html>   
