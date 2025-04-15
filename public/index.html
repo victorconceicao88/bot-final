@@ -129,6 +129,7 @@ textarea {
   color: var(--primary-color);
   font-weight: 800;
   letter-spacing: -0.5px;
+  padding-left: 10px;
 }
 
 .logo-text p {
@@ -1774,6 +1775,51 @@ input[placeholder="Obtendo sua localização..."] {
   transform: translateY(-2px);
   box-shadow: 0 5px 10px rgba(0,0,0,0.15);
 }
+
+.campaign-progress {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 350px;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    z-index: 1000;
+    border: 1px solid #ddd;
+}
+
+.progress-header {
+    padding: 12px 15px;
+    border-bottom: 1px solid #eee;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #f8f9fa;
+    border-radius: 8px 8px 0 0;
+}
+
+.progress-body {
+    padding: 15px;
+}
+
+.status-text {
+    margin-bottom: 10px;
+    font-weight: 500;
+}
+
+.details-text {
+    font-size: 12px;
+    color: #666;
+    margin-top: 5px;
+}
+
+.progress-bar-promo {
+    background-color: #28a745;
+}
+
+.progress-bar-review {
+    background-color: #17a2b8;
+}
 /* Estilo para quando o campo está desabilitado */
 input:disabled {
   background-color: #f8f9fa;
@@ -1785,27 +1831,31 @@ input:disabled {
     font-size: 16px;
   }
 }
+
 }
   </style>
 </head>
 <body>
   <!-- Main Navigation -->
-  <header class="main-header" style="border-bottom: 1px solid #280b04; padding-bottom: 10px;">
-    <div class="container navbar-container">
-      <div class="d-flex justify-content-between align-items-center py-1">
-        <div id="main-header" class="logo-container">
+<!-- Main Navigation -->
+<header class="main-header" style="border-bottom: 1px solid #280b04; padding-bottom: 10px;">
+  <div class="container navbar-container">
+    <div class="d-flex justify-content-between align-items-center py-1">
+      <div id="main-header" class="logo-container">
+        <a href="/" style="display: flex; align-items: center; text-decoration: none;">
           <img src="vivi.jpg" alt="Cozinha da Vivi" class="logo-img">
           <div class="logo-text">
             <h1 class="mb-0">Cozinha da Vivi</h1>
           </div>
-        </div>
-        <div class="cart-icon-container cart-visibility-control" id="cart-indicator" style="display: none;">
-          <i class="fas fa-shopping-cart cart-icon"></i>
-          <span id="cart-count" class="cart-icon-badge" style="display: none;">0</span>
-        </div>
+        </a>
+      </div>
+      <div class="cart-icon-container cart-visibility-control" id="cart-indicator" style="display: none;">
+        <i class="fas fa-shopping-cart cart-icon"></i>
+        <span id="cart-count" class="cart-icon-badge" style="display: none;">0</span>
       </div>
     </div>
-  </header>
+  </div>
+</header>
 
 
   <!-- Cart Overlay -->
@@ -2862,87 +2912,131 @@ function listenForAvailabilityChanges() {
 const tripAdvisorLink = 'https://www.tripadvisor.com/Restaurant_Review-g189120-d33062978-Reviews-Cozinha_Da_Vivi-Portimao_Faro_District_Algarve.html?m=69573';
 
 const ModalService = {
-  init: function() {
-    this.bindEvents();
-  },
-  
-  bindEvents: function() {
-    // Abrir WhatsApp
-    document.querySelector('.whatsapp-promo-btn')?.addEventListener('click', () => {
-      this.sendWhatsAppPromotion();
-    });
+    // Armazena números que já receberam cada tipo de mensagem
+    messageHistory: {
+        promos: new Set(),
+        reviews: new Set()
+    },
     
-    // Abrir TripAdvisor
-    document.querySelector('.tripadvisor-btn')?.addEventListener('click', () => {
-      this.sendTripAdvisorRequest();
-    });
-  },
-  
-  sendWhatsAppPromotion: function() {
-    let exampleName = '[nome]';
-    if (typeof orders !== 'undefined' && orders.length > 0) {
-      const lastOrder = [...orders].sort((a, b) => new Date(b.data) - new Date(a.data))[0];
-      if (lastOrder?.cliente) {
-        exampleName = lastOrder.cliente;
-      }
-    }
-
-    const message =
-      `Olá ${exampleName}, tudo bem?\n\n` +
-      `No Cozinha da Vivi temos duas especialidades que são um verdadeiro sucesso entre os nossos clientes! 😍\n\n` +
-      `🍲 *Vaca Atolada* servida todas as *quintas-feiras*\n` +
-      `🇧🇷 *Feijoada Brasileira completa* todos os *sábados*\n\n` +
-      `Reserve já a sua refeição connosco!\n` +
-      `Faça o seu pedido em:\n` +
-      `🌐 www.cozinhadavivi.pt\n\n` +
-      `Agradecemos a sua preferência! 💚`;
-
-    this.sendToAllClients(message, 'whatsapp');
-  },
-  
-  sendTripAdvisorRequest: function() {
-    const message = `Olá [nome],Obrigado pela sua visita! A sua avaliação no TripAdvisor é essencial para continuarmos a melhorar e a servir com excelência.${tripAdvisorLink}`;
-    this.sendToAllClients(message, 'tripadvisor');
-  },
-  
-  sendToAllClients: function(message, type) {
-    const uniqueClients = [];
-    const phonesSent = new Set();
-    
-    orders
-      .sort((a, b) => new Date(b.data) - new Date(a.data))
-      .forEach(client => {
-        const phone = client.telefone ? client.telefone.replace(/\D/g, '') : null;
-        if (phone && !phonesSent.has(phone)) {
-          phonesSent.add(phone);
-          uniqueClients.push(client);
-        }
-      });
-    
-    if (uniqueClients.length === 0) {
-      alert('Nenhum cliente encontrado.');
-      return;
-    }
-    
-    uniqueClients.forEach((client, index) => {
-      setTimeout(() => {
-        let text = type === 'tripadvisor' 
-          ? `Olá ${client.cliente},Obrigado pela sua visita! A sua avaliação no TripAdvisor é essencial para continuarmos a melhorar e a servir com excelência.${tripAdvisorLink}`
-          : `Olá ${client.cliente}, ${message}`;
+    init: function() {
+        this.loadHistory();
         
-        const url = `https://wa.me/${client.telefone.replace(/\D/g, '')}?text=${encodeURIComponent(text)}`;
-        window.open(url, '_blank');
-      }, index * 2000);
-    });
-    
-    alert(`Mensagens serão enviadas para ${uniqueClients.length} clientes! As abas do WhatsApp serão abertas uma a uma com intervalo de 2 segundos.`);
-  }
+        document.querySelector('.whatsapp-promo-btn')?.addEventListener('click', (e) => {
+            e.preventDefault();
+            this.prepareToSend('promo');
+        });
+
+        document.querySelector('.tripadvisor-btn')?.addEventListener('click', (e) => {
+            e.preventDefault();
+            this.prepareToSend('review');
+        });
+    },
+
+    // Carrega histórico do Firebase
+    loadHistory: function() {
+        database.ref('messageHistory').once('value').then(snapshot => {
+            const history = snapshot.val() || {};
+            
+            Object.entries(history).forEach(([phone, data]) => {
+                if (data.promo) this.messageHistory.promos.add(phone);
+                if (data.review) this.messageHistory.reviews.add(phone);
+            });
+        });
+    },
+
+    prepareToSend: function(messageType) {
+        database.ref('orders').once('value').then(snapshot => {
+            const orders = snapshot.val() ? Object.values(snapshot.val()) : [];
+            const client = this.findEligibleClient(orders, messageType);
+            
+            if (!client) {
+                alert(`Todos os clientes já receberam ${messageType === 'promo' ? 'promoção' : 'avaliação'}!`);
+                return;
+            }
+
+            this.showClientConfirmation(client, messageType);
+        });
+    },
+
+    // Encontra o próximo cliente elegível
+    findEligibleClient: function(orders, messageType) {
+        // Ordena do mais recente para o mais antigo
+        orders.sort((a, b) => new Date(b.data) - new Date(a.data));
+        
+        for (const order of orders) {
+            if (!order.telefone) continue;
+            
+            const phone = this.normalizePhone(order.telefone);
+            const receivedPromo = this.messageHistory.promos.has(phone);
+            const receivedReview = this.messageHistory.reviews.has(phone);
+            
+            // Verifica elegibilidade baseada no tipo de mensagem
+            if ((messageType === 'promo' && !receivedPromo) || 
+                (messageType === 'review' && !receivedReview)) {
+                return {
+                    name: order.cliente || 'Cliente',
+                    phone: phone,
+                    orderId: order.id || 'sem_id'
+                };
+            }
+        }
+        return null;
+    },
+
+    showClientConfirmation: function(client, messageType) {
+        const message = messageType === 'promo' 
+            ? `Olá ${client.name}, mensagem de promoção...`
+            : `Olá ${client.name}, por favor avalie: ${tripAdvisorLink}`;
+        
+        if (confirm(`Enviar ${messageType === 'promo' ? 'promoção' : 'avaliação'} para:\n${client.name}\n${client.phone}?`)) {
+            this.sendMessage(client, message, messageType);
+        }
+    },
+
+    sendMessage: function(client, message, messageType) {
+        const whatsappURL = `https://wa.me/${client.phone}?text=${encodeURIComponent(message)}`;
+        
+        // Atualiza Firebase
+        const updates = {};
+        updates[`messageHistory/${client.phone}/${messageType}`] = {
+            sentAt: new Date().toISOString(),
+            orderId: client.orderId
+        };
+
+        database.ref().update(updates)
+            .then(() => {
+                // Atualiza localmente
+                if (messageType === 'promo') {
+                    this.messageHistory.promos.add(client.phone);
+                } else {
+                    this.messageHistory.reviews.add(client.phone);
+                }
+                
+                // Abre WhatsApp
+                window.open(whatsappURL, '_blank');
+                alert(`Mensagem enviada para ${client.name}!`);
+                
+                // Pergunta se deseja enviar para o próximo
+                setTimeout(() => {
+                    if (confirm('Deseja enviar para outro cliente?')) {
+                        this.prepareToSend(messageType);
+                    }
+                }, 1000);
+            })
+            .catch(error => {
+                console.error("Erro ao registrar envio:", error);
+                alert("Erro ao registrar, mas mensagem foi enviada.");
+            });
+    },
+
+    normalizePhone: function(phone) {
+        return phone.replace(/\D/g, '');
+    }
 };
 
 document.addEventListener('DOMContentLoaded', function() {
-  ModalService.init();
+    ModalService.init();
 });
-
 // Função para atualizar a disponibilidade dos produtos
 function updateProductAvailability() {
   const productSwitches = {
@@ -7101,7 +7195,288 @@ document.addEventListener('DOMContentLoaded', function() {
   // Melhorar toques em botões
   document.addEventListener('touchstart', function() {}, {passive: true});
 });
+ document.addEventListener('DOMContentLoaded', function() {
+    // Cria o modal premium
+    const promoModal = document.createElement('div');
+    promoModal.className = 'promo-modal-premium';
+    promoModal.innerHTML = `
+        <div class="promo-modal-container">
+            <div class="promo-modal-card animate__animated animate__fadeInUp">
+                <span class="close-promo-modal">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M18 6L6 18" stroke="#6B7280" stroke-width="2" stroke-linecap="round"/>
+                        <path d="M6 6L18 18" stroke="#6B7280" stroke-width="2" stroke-linecap="round"/>
+                    </svg>
+                </span>
+                
+                <div class="promo-modal-header">
+                    <div class="promo-badge">PRATOS ESPECIAIS</div>
+                    <h3>Nossas <span>Especialidades</span></h3>
+                    <p>Sabores exclusivos para dias especiais</p>
+                </div>
+                
+                <div class="promo-modal-body">
+                    <div class="promo-item thursday">
+                        <div class="promo-day">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M19 4H5C3.89543 4 3 4.89543 3 6V20C3 21.1046 3.89543 22 5 22H19C20.1046 22 21 21.1046 21 20V6C21 4.89543 20.1046 4 19 4Z" stroke="#F59E0B" stroke-width="2"/>
+                                <path d="M16 2V6" stroke="#F59E0B" stroke-width="2" stroke-linecap="round"/>
+                                <path d="M8 2V6" stroke="#F59E0B" stroke-width="2" stroke-linecap="round"/>
+                                <path d="M3 10H21" stroke="#F59E0B" stroke-width="2" stroke-linecap="round"/>
+                            </svg>
+                            <span>QUINTA-FEIRA</span>
+                        </div>
+                        <div class="promo-content">
+                            <h4>Vaca Atolada</h4>
+                            <p class="promo-desc">Prato mineiro com carne macia, mandioca e temperos especiais</p>
+                            <div class="promo-price">€13,00</div>
+                        </div>
+                        <div class="promo-image" style="background-image: url('imagens/vaca-atolada.jpg')"></div>
+                    </div>
+                    
+                    <div class="promo-divider">
+                        <svg width="30" height="30" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M12 2V22" stroke="#9CA3AF" stroke-width="2" stroke-linecap="round" stroke-dasharray="4 4"/>
+                        </svg>
+                    </div>
+                    
+                    <div class="promo-item sunday">
+                        <div class="promo-day">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M19 4H5C3.89543 4 3 4.89543 3 6V20C3 21.1046 3.89543 22 5 22H19C20.1046 22 21 21.1046 21 20V6C21 4.89543 20.1046 4 19 4Z" stroke="#3B82F6" stroke-width="2"/>
+                                <path d="M16 2V6" stroke="#3B82F6" stroke-width="2" stroke-linecap="round"/>
+                                <path d="M8 2V6" stroke="#3B82F6" stroke-width="2" stroke-linecap="round"/>
+                                <path d="M3 10H21" stroke="#3B82F6" stroke-width="2" stroke-linecap="round"/>
+                            </svg>
+                            <span>DOMINGO</span>
+                        </div>
+                        <div class="promo-content">
+                            <h4>Feijoada Completa</h4>
+                            <p class="promo-desc">A tradicional feijoada Brasileira com todos os acompanhamentos e carnes selecionadas</p>
+                            <div class="promo-price">€13,00</div>
+                        </div>
+                        <div class="promo-image" style="background-image: url('imagens/feijoada.jpeg')"></div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="promo-modal-overlay"></div>
+        </div>
+    `;
+    
+    document.body.appendChild(promoModal);
+    
+    // Adiciona os estilos premium
+    const style = document.createElement('style');
+    style.textContent = `
+        .promo-modal-premium {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            visibility: hidden;
+            opacity: 0;
+            transition: all 0.4s cubic-bezier(0.32, 0.72, 0, 1);
+        }
+        .promo-modal-premium.active {
+            visibility: visible;
+            opacity: 1;
+        }
+        .promo-modal-container {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .promo-modal-overlay {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: rgba(15, 23, 42, 0.7);
+            backdrop-filter: blur(8px);
+            z-index: 1;
+        }
+        .promo-modal-card {
+            position: relative;
+            background: white;
+            border-radius: 16px;
+            width: 100%;
+            max-width: 480px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            z-index: 2;
+            overflow: hidden;
+            animation-duration: 0.6s;
+            transform: translateY(20px);
+            transition: all 0.3s ease;
+        }
+        .promo-modal-premium.active .promo-modal-card {
+            transform: translateY(0);
+        }
+        .close-promo-modal {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #F3F4F6;
+            border-radius: 50%;
+            cursor: pointer;
+            z-index: 3;
+            transition: all 0.2s ease;
+        }
+        .close-promo-modal:hover {
+            background: #E5E7EB;
+        }
+        .promo-modal-header {
+            padding: 30px 30px 20px;
+            text-align: center;
+            background: linear-gradient(135deg, #FFFFFF 0%, #F9FAFB 100%);
+        }
+        .promo-badge {
+            display: inline-block;
+            background: linear-gradient(90deg, #F59E0B 0%, #EF4444 100%);
+            color: white;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+        }
+        .promo-modal-header h3 {
+            color: #1F2937;
+            font-size: 24px;
+            font-weight: 700;
+            margin: 0 0 5px;
+        }
+        .promo-modal-header h3 span {
+            color: #3B82F6;
+        }
+        .promo-modal-header p {
+            color: #6B7280;
+            font-size: 14px;
+            margin: 0;
+        }
+        .promo-modal-body {
+            padding: 20px 30px;
+        }
+        .promo-item {
+            position: relative;
+            display: flex;
+            gap: 15px;
+            padding: 15px;
+            border-radius: 12px;
+            margin-bottom: 15px;
+            overflow: hidden;
+        }
+        .promo-item.thursday {
+            background: rgba(254, 243, 199, 0.4);
+            border: 1px solid #FDE68A;
+        }
+        .promo-item.sunday {
+            background: rgba(219, 234, 254, 0.4);
+            border: 1px solid #BFDBFE;
+        }
+        .promo-day {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
+            min-width: 80px;
+        }
+        .promo-day span {
+            color: #4B5563;
+            font-size: 12px;
+            font-weight: 600;
+            text-align: center;
+        }
+        .promo-content {
+            flex: 1;
+        }
+        .promo-item h4 {
+            color: #1F2937;
+            font-size: 18px;
+            font-weight: 700;
+            margin: 0 0 5px;
+        }
+        .promo-desc {
+            color: #6B7280;
+            font-size: 13px;
+            line-height: 1.5;
+            margin: 0 0 10px;
+        }
+        .promo-price {
+            color: #10B981;
+            font-size: 18px;
+            font-weight: 700;
+        }
+        .promo-image {
+            position: absolute;
+            right: -30px;
+            bottom: -30px;
+            width: 100px;
+            height: 100px;
+            background-size: cover;
+            background-position: center;
+            border-radius: 50%;
+            opacity: 0.3;
+            z-index: 0;
+        }
+        .promo-divider {
+            display: flex;
+            justify-content: center;
+            margin: 10px 0;
+        }
+        @media (max-width: 480px) {
+            .promo-modal-header {
+                padding: 25px 20px 15px;
+            }
+            .promo-modal-body {
+                padding: 15px 20px;
+            }
+            .promo-item {
+                flex-direction: column;
+                gap: 10px;
+            }
+            .promo-day {
+                flex-direction: row;
+                justify-content: flex-start;
+                min-width: auto;
+            }
+        }
+    `;
+    document.head.appendChild(style);
+    
+    // Mostra o modal com efeito
+    setTimeout(() => {
+        promoModal.classList.add('active');
+    }, 1000);
+    
+    // Fechar o modal com animação
+    const closeModal = () => {
+        promoModal.querySelector('.promo-modal-card').classList.remove('animate__fadeInUp');
+        promoModal.querySelector('.promo-modal-card').classList.add('animate__fadeOutDown');
+        setTimeout(() => {
+            promoModal.classList.remove('active');
+        }, 500);
+    };
+    
+    promoModal.querySelector('.close-promo-modal').addEventListener('click', closeModal);
+    promoModal.querySelector('.promo-modal-overlay').addEventListener('click', closeModal);
+});
 
-  </script>
+</script>
 </body>
 </html>   
