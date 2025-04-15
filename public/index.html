@@ -107,7 +107,6 @@ textarea {
   width: 50px;
   border-radius: 50%;
   object-fit: cover;
-  border: 2px solid var(--primary-color);
   transition: all var(--transition-speed) ease;
   box-shadow: 0 3px 6px rgba(0,0,0,0.1);
 }
@@ -142,12 +141,17 @@ textarea {
 .cart-icon-container {
   position: relative;
   cursor: pointer;
-  transition: transform var(--transition-speed) ease;
+  padding: 6px; /* leve espaço pro efeito respirar */
+  border-radius: 6px;
+  transition: transform 0.2s ease, box-shadow 0.3s ease;
 }
 
 .cart-icon-container:hover {
   transform: scale(1.1);
+  box-shadow: 0 0 10px rgba(40, 11, 4, 0.3); /* efeito sutil ao redor */
 }
+
+
 
 .cart-icon {
   font-size: 1.4rem;
@@ -169,6 +173,7 @@ textarea {
   font-size: 0.7rem;
   font-weight: bold;
 }
+
 
 /* Menu em mobile */
 .menu-section {
@@ -210,17 +215,15 @@ textarea {
 
 .category-tabs {
   display: flex;
-  gap: 10px;
-  overflow-x: auto;
+  flex-wrap: nowrap; /* Impede quebra de linha */
+  overflow-x: auto; /* Permite rolagem horizontal se necessário */
+  gap: 12px;
   padding-bottom: 15px;
-  scrollbar-width: thin;
-  scrollbar-color: var(--secondary-color) transparent;
-  margin-top: 1rem;
-  justify-content: center;
+  scrollbar-width: none; /* Esconde scrollbar no Firefox */
 }
 
 .category-tabs::-webkit-scrollbar {
-  height: 5px;
+  display: none; /* Esconde scrollbar no Chrome/Safari */
 }
 
 .category-tabs::-webkit-scrollbar-thumb {
@@ -265,6 +268,7 @@ textarea {
   border-color: var(--primary-color);
   transform: translateY(-2px);
   box-shadow: 0 6px 15px rgba(40, 11, 4, 0.15);
+  margin-top: 5px;
 }
 
 .category-tab.active i {
@@ -287,17 +291,13 @@ textarea {
 }
 
 .product-card {
-  background-color: white;
-  border-radius: 14px;
-  overflow: hidden;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.1);
+  border: 1px solid #3d1106;
+  border-radius: 10px; /* Define o arredondamento dos cantos da div externa */
+  background-color: #fffbf7;
+  overflow: hidden; /* Garante que o conteúdo não vaze da borda arredondada */
   display: flex;
   flex-direction: column;
-  height: 100%;
-  border: none;
-  position: relative;
-  margin-bottom: 15px;
+  box-sizing: border-box;
 }
 
 .product-card:hover {
@@ -329,6 +329,7 @@ textarea {
   height: 100%;
   object-fit: cover;
   transition: transform 0.5s ease;
+  display: block;
 }
 
 .product-card:hover .product-image {
@@ -336,10 +337,15 @@ textarea {
 }
 
 .product-content {
+  border: 1px solid #3d1106;
+  background-color: #fffbf7;
   padding: 18px;
+  padding-bottom: 10px;
   flex: 1;
   display: flex;
   flex-direction: column;
+  overflow: hidden; 
+  box-sizing: border-box;
 }
 
 .product-name {
@@ -375,8 +381,8 @@ textarea {
 }
 
 .add-to-cart {
-  background-color: var(--primary-color);
-  color: var(--secondary-color);
+  background-color: #3d1106;
+  color: #ffb501;
   border: none;
   border-radius: 8px;
   padding: 8px 16px;
@@ -529,11 +535,11 @@ textarea {
   padding: 8px 16px;
 }
 
-/* Adicione isso na seção de estilo */
+/* Garante que os botões de "-", quantidade e "+" fiquem SEMPRE em linha */
 .quantity-control {
-  display: flex;
-  align-items: center;
-  gap: 6px;
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center !important;
 }
 
 .quantity-btn {
@@ -555,14 +561,8 @@ textarea {
   min-width: 20px;
   text-align: center;
   font-weight: 600;
+  margin: 0 5px;
 }
-/* Se ainda estiver desalinhado, adicione isso: */
-.quantity-control {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
 /* Garante que os ícones dentro dos botões estejam centralizados */
 .quantity-btn i {
   margin: 0;
@@ -1118,7 +1118,7 @@ input:checked + .slider:before {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  background-color: rgba(220, 53, 69, 0.9);
+  background-color: #a92c0d;
   color: white;
   padding: 6px 12px;
   border-radius: 4px;
@@ -1239,6 +1239,47 @@ input:checked + .slider:before {
   .admin-order-item {
     margin-bottom: 0.5rem;
   }
+  .product-grid {
+    display: grid !important;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)) !important;
+    gap: 30px !important;
+    width: 100% !important;
+    max-width: 1200px !important;
+    margin: 0 auto !important;
+    padding: 0 20px !important;
+  }
+  
+  .product-image-container {
+    height: 250px; /* Altura maior para as imagens */
+  }
+  .category-tabs {
+    display: flex !important;
+    flex-wrap: nowrap !important;
+    justify-content: center !important;
+    overflow-x: visible !important;
+    gap: 15px;
+    padding: 20px 0;
+    margin: 0 auto;
+    max-width: 1200px;
+  }
+  
+  .category-tab {
+    flex-shrink: 0;
+    width: 140px;
+    padding: 12px 5px;
+    text-align: center;
+    margin: 0 !important;
+  }
+  .cart-sidebar {
+    width: 400px;
+  }
+
+  .product-card {
+    width: 100% !important;
+    height: auto !important;
+    margin: 0 !important;
+    break-inside: avoid !important;
+  }
 }
 
 /* Layout responsivo */
@@ -1259,14 +1300,20 @@ input:checked + .slider:before {
   .admin-panel-container .col-md-3 {
     margin-bottom: 20px;
   }
+
+  .admin-order-card {
+    display: block !important; /* Remove o display: none que estava ocultando tudo */
+  }
   
   .admin-order-actions {
-    flex-direction: column;
-    gap: 6px;
+    display: flex !important;
+    flex-wrap: wrap;
+    gap: 8px;
   }
   
   .admin-order-actions .btn {
-    width: 100%;
+    flex: 1 0 auto;
+    min-width: 120px;
   }
 }
 
@@ -1276,8 +1323,18 @@ input:checked + .slider:before {
     font-size: 1.8rem;
   }
   .quantity-control {
-    flex-direction: row;
+    flex-direction: row !important; /* Mantém horizontal mesmo em mobile */
+    display: flex !important;
   }
+  
+
+  }
+  
+  .product-content {
+    padding: 14px;
+  }
+
+
   
   .form-check-label {
     font-size: 0.9rem;
@@ -1289,9 +1346,8 @@ input:checked + .slider:before {
 }
   
 .category-tab {
-  min-width: 70px;
-  padding: 8px 5px;
-  font-size: 0.7rem;
+  flex: 0 0 auto; /* Não cresce/não encolhe */
+  white-space: nowrap; /* Texto não quebra */
 }
   
   .category-tab i {
@@ -1305,8 +1361,10 @@ input:checked + .slider:before {
   }
   
   .product-image-container {
-    height: 160px;
-  }
+    width: 100%;
+    aspect-ratio: 4 / 3; /* Mantém proporção da imagem — ajuste conforme necessário */
+    overflow: hidden;
+}
   
   .product-name {
     font-size: 1.05rem;
@@ -1372,7 +1430,7 @@ input:checked + .slider:before {
     left: 15px;
     right: auto;
   }
-}
+
 
 @media (max-width: 575px) {
   .menu-title {
@@ -1387,7 +1445,7 @@ input:checked + .slider:before {
   
   .category-tab {
     min-width: 70px;
-    padding: 8px 5px;
+    padding: 5px 5px;
     font-size: 0.7rem;
   }
   
@@ -1397,7 +1455,16 @@ input:checked + .slider:before {
   }
   
   .product-content {
+    border: 1px solid #3d1106;
     padding: 14px;
+    box-sizing: border-box;  /* Garantir que a borda e o padding não aumentem o tamanho total */
+    overflow: hidden;            /* Garante que nada vaze para fora da borda arredondada */  
+    border-top-width: 0px;
+    border-left-width: 0px;
+    border-bottom-width: 0px;
+    border-right-width: 0px;
+
+
   }
   
   .product-description {
@@ -1630,6 +1697,83 @@ input[placeholder="Obtendo sua localização..."] {
   margin-bottom: 15px;
 }
 
+
+/* Estilos para os botões de comunicação */
+/* Estilos para a seção de comunicação */
+.customer-comms-section {
+  background-color: #ffffff;
+  border-radius: 12px;
+  padding: 25px;
+  margin: 30px 0;
+  border: 1px solid #e0e0e0;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.comms-title {
+  font-size: 1.3rem;
+  color: #2c3e50;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-weight: 600;
+}
+
+.comms-title i {
+  color: #25D366;
+  font-size: 1.4rem;
+}
+
+/* Estilos para os botões */
+.comms-buttons {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+  margin-top: 20px;
+}
+
+.comms-btn {
+  flex: 1;
+  min-width: 240px;
+  padding: 14px 20px;
+  border: none;
+  border-radius: 10px;
+  font-weight: 600;
+  font-size: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 3px 6px rgba(0,0,0,0.1);
+}
+
+.comms-btn i {
+  font-size: 1.3rem;
+}
+
+.whatsapp-promo-btn {
+  background-color: #25D366;
+  color: white;
+}
+
+.whatsapp-promo-btn:hover {
+  background-color: #1fbb58;
+  transform: translateY(-2px);
+  box-shadow: 0 5px 10px rgba(0,0,0,0.15);
+}
+
+.tripadvisor-btn {
+  background-color: #34E0A1;
+  color: white;
+}
+
+.tripadvisor-btn:hover {
+  background-color: #2ac989;
+  transform: translateY(-2px);
+  box-shadow: 0 5px 10px rgba(0,0,0,0.15);
+}
 /* Estilo para quando o campo está desabilitado */
 input:disabled {
   background-color: #f8f9fa;
@@ -1646,14 +1790,13 @@ input:disabled {
 </head>
 <body>
   <!-- Main Navigation -->
-  <header class="main-header">
+  <header class="main-header" style="border-bottom: 1px solid #280b04; padding-bottom: 10px;">
     <div class="container navbar-container">
       <div class="d-flex justify-content-between align-items-center py-1">
         <div id="main-header" class="logo-container">
           <img src="vivi.jpg" alt="Cozinha da Vivi" class="logo-img">
           <div class="logo-text">
             <h1 class="mb-0">Cozinha da Vivi</h1>
-            <p class="mb-0">Comida caseira com amor</p>
           </div>
         </div>
         <div class="cart-icon-container cart-visibility-control" id="cart-indicator" style="display: none;">
@@ -1663,6 +1806,7 @@ input:disabled {
       </div>
     </div>
   </header>
+
 
   <!-- Cart Overlay -->
   <div class="cart-overlay" id="cart-overlay"></div>
@@ -1714,16 +1858,15 @@ input:disabled {
       </div>
     </div>
   </div>
-
   <!-- Seção de Produtos Atualizada -->
   <section id="products" class="menu-section">
     <div class="container">
       <div class="menu-header">
-        <h2 class="menu-title">O Nosso Menu</h2>
+        <h2 class="menu-title">Menu</h2>
         <div class="category-tabs">
           <div class="category-tab active" data-category="all">
             <i class="fas fa-utensils"></i>
-            <span>Todos</span>
+            <span> Ver Todos</span>
           </div>
           <div class="category-tab" data-category="churrasco">
             <i class="fas fa-fire-alt"></i>
@@ -2333,9 +2476,23 @@ input:disabled {
             </button>
           </div>
         </div>
-      </nav>
-      
-          <div class="col-md-9">
+      </nav>      
+<!-- Seção de Comunicação com Clientes -->
+<div class="customer-comms-section">
+  <div class="comms-title">
+    <i class="fas fa-bullhorn"></i>
+    <span>Comunicados e Promoções</span>
+  </div>
+  <div class="comms-buttons">
+    <button class="comms-btn whatsapp-promo-btn">
+      <i class="fab fa-whatsapp"></i> Enviar Promoção por WhatsApp
+    </button>
+    <button class="comms-btn tripadvisor-btn">
+      <i class="fab fa-tripadvisor"></i> Solicitar Avaliação
+    </button>
+  </div>
+</div>
+        <div class="col-md-9">
           <div class="card admin-card">
               <div class="card-header bg-white">
                 <div class="d-flex justify-content-between align-items-center">
@@ -2438,7 +2595,7 @@ input:disabled {
         <div class="modal-body text-center py-4">
           <i class="fas fa-check-circle text-success mb-3" style="font-size: 3rem;"></i>
           <h4 class="mb-3">Seu pedido foi recebido!</h4>
-          <p class="mb-4">Agora vamos preparar seu pedido com todo cuidado. Você será redirecionado para o WhatsApp para confirmar os detalhes.</p>
+          <p class="mb-4"> Clique em Enviar no WhatsApp para que o restaurante receba e comece a preparar seu pedido.</p>
           <div class="d-flex justify-content-center">
             <div class="spinner-border text-primary" role="status">
               <span class="visually-hidden">Carregando...</span>
@@ -2501,11 +2658,11 @@ input:disabled {
   <div class="modal fade options-modal" id="productOptionsModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
       <div class="modal-content">
-        <div class="modal-header bg-primary text-white">
+        <div class="modal-header" style="background-color: #feb300; color: #3d1106;">
           <h5 class="modal-title" id="productOptionsModalTitle">Opções do Produto</h5>
           <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
-        <div class="modal-body" id="product-options-content">
+        <div class="modal-body" id="product-options-content" style="background-color: #fffbf7;">
           <!-- Conteúdo das opções será inserido aqui -->
         </div>
         <div class="modal-footer">
@@ -2587,6 +2744,8 @@ input:disabled {
         password: "2320"
       }
     };
+
+    
 
     // Estado do aplicativo
     let cart = JSON.parse(localStorage.getItem('cart')) || [];
@@ -2699,7 +2858,90 @@ function listenForAvailabilityChanges() {
     });
   });
 }
+// Corrigir erro: definir o link do TripAdvisor fora do objeto
+const tripAdvisorLink = 'https://www.tripadvisor.com/Restaurant_Review-g189120-d33062978-Reviews-Cozinha_Da_Vivi-Portimao_Faro_District_Algarve.html?m=69573';
 
+const ModalService = {
+  init: function() {
+    this.bindEvents();
+  },
+  
+  bindEvents: function() {
+    // Abrir WhatsApp
+    document.querySelector('.whatsapp-promo-btn')?.addEventListener('click', () => {
+      this.sendWhatsAppPromotion();
+    });
+    
+    // Abrir TripAdvisor
+    document.querySelector('.tripadvisor-btn')?.addEventListener('click', () => {
+      this.sendTripAdvisorRequest();
+    });
+  },
+  
+  sendWhatsAppPromotion: function() {
+    let exampleName = '[nome]';
+    if (typeof orders !== 'undefined' && orders.length > 0) {
+      const lastOrder = [...orders].sort((a, b) => new Date(b.data) - new Date(a.data))[0];
+      if (lastOrder?.cliente) {
+        exampleName = lastOrder.cliente;
+      }
+    }
+
+    const message =
+      `Olá ${exampleName}, tudo bem?\n\n` +
+      `No Cozinha da Vivi temos duas especialidades que são um verdadeiro sucesso entre os nossos clientes! 😍\n\n` +
+      `🍲 *Vaca Atolada* servida todas as *quintas-feiras*\n` +
+      `🇧🇷 *Feijoada Brasileira completa* todos os *sábados*\n\n` +
+      `Reserve já a sua refeição connosco!\n` +
+      `Faça o seu pedido em:\n` +
+      `🌐 www.cozinhadavivi.pt\n\n` +
+      `Agradecemos a sua preferência! 💚`;
+
+    this.sendToAllClients(message, 'whatsapp');
+  },
+  
+  sendTripAdvisorRequest: function() {
+    const message = `Olá [nome],Obrigado pela sua visita! A sua avaliação no TripAdvisor é essencial para continuarmos a melhorar e a servir com excelência.${tripAdvisorLink}`;
+    this.sendToAllClients(message, 'tripadvisor');
+  },
+  
+  sendToAllClients: function(message, type) {
+    const uniqueClients = [];
+    const phonesSent = new Set();
+    
+    orders
+      .sort((a, b) => new Date(b.data) - new Date(a.data))
+      .forEach(client => {
+        const phone = client.telefone ? client.telefone.replace(/\D/g, '') : null;
+        if (phone && !phonesSent.has(phone)) {
+          phonesSent.add(phone);
+          uniqueClients.push(client);
+        }
+      });
+    
+    if (uniqueClients.length === 0) {
+      alert('Nenhum cliente encontrado.');
+      return;
+    }
+    
+    uniqueClients.forEach((client, index) => {
+      setTimeout(() => {
+        let text = type === 'tripadvisor' 
+          ? `Olá ${client.cliente},Obrigado pela sua visita! A sua avaliação no TripAdvisor é essencial para continuarmos a melhorar e a servir com excelência.${tripAdvisorLink}`
+          : `Olá ${client.cliente}, ${message}`;
+        
+        const url = `https://wa.me/${client.telefone.replace(/\D/g, '')}?text=${encodeURIComponent(text)}`;
+        window.open(url, '_blank');
+      }, index * 2000);
+    });
+    
+    alert(`Mensagens serão enviadas para ${uniqueClients.length} clientes! As abas do WhatsApp serão abertas uma a uma com intervalo de 2 segundos.`);
+  }
+};
+
+document.addEventListener('DOMContentLoaded', function() {
+  ModalService.init();
+});
 
 // Função para atualizar a disponibilidade dos produtos
 function updateProductAvailability() {
@@ -2924,10 +3166,12 @@ listenForOrders: (callback) => {
       updateStorage: () => {
         localStorage.setItem('cart', JSON.stringify(cart));
       },
+// Substitua a função addItem por esta versão:
+addItem: (id, name, price, image = '', options = {}) => {
+  const existingItem = cart.find(item => 
+    item.id === id && JSON.stringify(item.options) === JSON.stringify(options)
+  );
 
-      addItem: (id, name, price, image = '', options = {}) => {
-  const existingItem = cart.find(item => item.id === id && JSON.stringify(item.options) === JSON.stringify(options));
-  
   if (existingItem) {
     existingItem.quantity += 1;
   } else {
@@ -2939,25 +3183,19 @@ listenForOrders: (callback) => {
   
   const productElement = document.querySelector(`.product-card[data-id="${id}"]`);
   if (productElement) {
-    Utils.animateElement(productElement, 'pulse');
-    
-    // Muda o botão para "Adicionado" e cor verde
     const addButton = productElement.querySelector('.add-to-cart');
     if (addButton) {
+      const originalHTML = addButton.innerHTML;
       addButton.innerHTML = '<i class="fas fa-check me-1"></i> Adicionado';
       addButton.classList.add('added');
-      addButton.style.backgroundColor = '#617c33';
       
-      // Retorna ao estado original após 2 segundos
       setTimeout(() => {
-        addButton.innerHTML = '<i class="fas fa-plus me-1"></i> Adicionar';
+        addButton.innerHTML = originalHTML;
         addButton.classList.remove('added');
-        addButton.style.backgroundColor = '';
       }, 2000);
     }
   }
 },
-
       updateItemQuantity: (id, newQuantity) => {
         const item = cart.find(item => item.id === id);
         if (item) {
@@ -2998,69 +3236,95 @@ listenForOrders: (callback) => {
       return { subtotal, deliveryFee, total };
       },
 
-  updateUI: () => {
-  DOM.cartItems.innerHTML = "";
-  
-  const { subtotal, deliveryFee, total } = Cart.getTotals();
-  const itemCount = cart.reduce((count, item) => count + item.quantity, 0);
+      updateUI: () => {
+    DOM.cartItems.innerHTML = "";
+    
+    const { subtotal, deliveryFee, total } = Cart.getTotals();
+    const itemCount = cart.reduce((count, item) => count + item.quantity, 0);
 
-  if (cart.length === 0) {
-    DOM.cartItems.innerHTML = `
-      <div class="list-group-item text-center py-4 empty-cart">
-        <i class="fas fa-shopping-cart empty-cart-icon mb-3"></i>
-        <p class="mb-0">Seu carrinho está vazio</p>
-        <small class="text-muted">Adicione itens para continuar</small>
-      </div>
-    `;
-    document.getElementById('clear-cart-button').style.display = 'none';
-  } else {
-    document.getElementById('clear-cart-button').style.display = 'block';
-    cart.forEach(item => {
-      const li = document.createElement("div");
-      li.className = "list-group-item";
-      
-      let optionsText = '';
-      if (item.options && Object.keys(item.options).length > 0) {
-        optionsText = Object.values(item.options).map(opt => opt.join(', ')).join(' | ');
-      }
-      
-      li.innerHTML = `
-        <div class="d-flex justify-content-between align-items-center">
-          <div>
-            <h6 class="mb-1">${item.name}</h6>
-            ${optionsText ? `<small class="text-muted">${optionsText}</small>` : ''}
-            <small class="d-block text-muted">${Utils.formatCurrency(item.price)}</small>
-          </div>
-          <div class="d-flex align-items-center gap-2">
-            <div class="cart-item-quantity">
-              <button class="quantity-btn decrease" data-id="${item.id}">
-                <i class="fas fa-minus"></i>
-              </button>
-              <span class="quantity mx-1">${item.quantity}</span>
-              <button class="quantity-btn increase" data-id="${item.id}">
-                <i class="fas fa-plus"></i>
-              </button>
+    if (cart.length === 0) {
+        DOM.cartItems.innerHTML = `
+            <div class="list-group-item text-center py-4 empty-cart">
+                <i class="fas fa-shopping-cart empty-cart-icon mb-3"></i>
+                <p class="mb-0">Seu carrinho está vazio</p>
+                <small class="text-muted">Adicione itens para continuar</small>
             </div>
-            <span class="fw-bold ms-2">${Utils.formatCurrency(item.price * item.quantity)}</span>
-            <button class="remove-item btn btn-sm btn-outline-danger ms-2" data-id="${item.id}">
-              <i class="fas fa-trash"></i>
-            </button>
-          </div>
-        </div>
-      `;
-      DOM.cartItems.appendChild(li);
-    });
-  }
-        DOM.subtotalElement.textContent = Utils.formatCurrency(subtotal);
-        document.getElementById("delivery-fee").textContent = Utils.formatCurrency(deliveryFee);
-        DOM.totalElement.textContent = Utils.formatCurrency(total);
-        
-        DOM.cartCount.textContent = itemCount;
-        DOM.cartCount.style.display = itemCount > 0 ? "flex" : "none";
-        DOM.cartIndicator.style.display = "flex";
-        
-        DOM.checkoutButton.disabled = cart.length === 0;
-      },
+        `;
+        document.getElementById('clear-cart-button').style.display = 'none';
+    } else {
+        document.getElementById('clear-cart-button').style.display = 'block';
+        cart.forEach(item => {
+            const li = document.createElement("div");
+            li.className = "list-group-item";
+            
+            let optionsText = '';
+            if (item.options && Object.keys(item.options).length > 0) {
+                optionsText = Object.values(item.options).map(opt => opt.join(', ')).join(' | ');
+            }
+            
+            li.innerHTML = `
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="mb-1">${item.name}</h6>
+                        ${optionsText ? `<small class="text-muted">${optionsText}</small>` : ''}
+                        <small class="d-block text-muted">${Utils.formatCurrency(item.price)}</small>
+                    </div>
+                    <div class="d-flex align-items-center gap-2">
+                        <div class="cart-item-quantity">
+                            <button class="quantity-btn decrease" data-id="${item.id}">
+                                <i class="fas fa-minus"></i>
+                            </button>
+                            <span class="quantity mx-1">${item.quantity}</span>
+                            <button class="quantity-btn increase" data-id="${item.id}">
+                                <i class="fas fa-plus"></i>
+                            </button>
+                        </div>
+                        <span class="fw-bold ms-2">${Utils.formatCurrency(item.price * item.quantity)}</span>
+                        <button class="remove-item btn btn-sm btn-outline-danger ms-2" data-id="${item.id}">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                </div>
+            `;
+            DOM.cartItems.appendChild(li);
+        });
+
+        // Adiciona os event listeners após criar os elementos
+        DOM.cartItems.querySelectorAll('.remove-item').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                Cart.removeItem(btn.dataset.id);
+            });
+        });
+
+        DOM.cartItems.querySelectorAll('.increase').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const item = cart.find(item => item.id === btn.dataset.id);
+                if (item) Cart.updateItemQuantity(item.id, item.quantity + 1);
+            });
+        });
+
+        DOM.cartItems.querySelectorAll('.decrease').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const item = cart.find(item => item.id === btn.dataset.id);
+                if (item) Cart.updateItemQuantity(item.id, item.quantity - 1);
+            });
+        });
+    }
+
+    DOM.subtotalElement.textContent = Utils.formatCurrency(subtotal);
+    document.getElementById("delivery-fee").textContent = Utils.formatCurrency(deliveryFee);
+    DOM.totalElement.textContent = Utils.formatCurrency(total);
+    
+    DOM.cartCount.textContent = itemCount;
+    DOM.cartCount.style.display = itemCount > 0 ? "flex" : "none";
+    DOM.cartIndicator.style.display = "flex";
+    
+    DOM.checkoutButton.disabled = cart.length === 0;
+    Cart.updateStorage(); // Garante que o carrinho é salvo no localStorage
+},
       
       toggleSidebar: () => {
         if (cart.length === 0) {
@@ -3271,7 +3535,7 @@ listenForOrders: (callback) => {
         DOM.productSection.classList.remove("d-none");
         DOM.checkoutSection.classList.add("d-none");
         Cart.toggleSidebar();
-    }, 3000);
+    }, 4700);
 },
 
 // Substitua a função updateAdminPanel por esta versão corrigida
@@ -3900,61 +4164,228 @@ generateKitchenOrder: (orderId) => {
   }
     };
 
-    // Funções de Admin
-    // Correção no processo de login
-    const Admin = {
-      login: (username, password) => {
-        if (username === APP_CONFIG.adminCredentials.username && 
-            password === APP_CONFIG.adminCredentials.password) {
-          isAdminLoggedIn = true;
-          localStorage.setItem('adminLoggedIn', 'true');
-          
-          // Esconde o modal de login
-          if (DOM.adminLoginModal) {
-            DOM.adminLoginModal.hide();
-          }
-          
-          // Mostra o painel admin
-          DOM.adminPanel.classList.remove("d-none");
-          DOM.productSection.classList.add("d-none");
-          DOM.checkoutSection.classList.add("d-none");
-          DOM.cartIndicator.style.display = 'none';
-          DOM.adminAccessBtn.style.display = 'none';
-          
-          // Atualiza o painel de pedidos
-          Order.updateAdminPanel();
-          
-          Utils.showNotification('Login realizado com sucesso!', 'success');
-          return true;
-        } else {
-          Utils.showNotification('Usuário ou senha incorretos', 'danger');
-          return false;
-        }
-      },
-      
-      logout: () => {
-        isAdminLoggedIn = false;
-        localStorage.setItem('adminLoggedIn', 'false');
-        
-        DOM.adminPanel.classList.add("d-none");
-        DOM.productSection.classList.remove("d-none");
-        DOM.cartIndicator.style.display = 'flex';
-        DOM.adminAccessBtn.style.display = 'flex';
-        
-        Utils.showNotification('Logout realizado com sucesso', 'info');
-      },
-      
-      checkLoginStatus: () => {
-        if (isAdminLoggedIn) {
-          DOM.adminPanel.classList.remove("d-none");
-          DOM.productSection.classList.add("d-none");
-          DOM.checkoutSection.classList.add("d-none");
-          DOM.cartIndicator.style.display = 'none';
-          DOM.adminAccessBtn.style.display = 'none';
-          Order.updateAdminPanel();
-        }
+    document.addEventListener('DOMContentLoaded', () => {
+  console.log('Página carregada!');
+  setupEventListeners(); // Setup dos eventos
+});
+
+function setupEventListeners() {
+  // Botão WhatsApp
+  const openWhatsappPromoBtn = document.getElementById('openWhatsappPromo');
+  console.log('openWhatsappPromoBtn', openWhatsappPromoBtn);  // Verificando se o botão está sendo encontrado
+  
+  if (openWhatsappPromoBtn) {
+    openWhatsappPromoBtn.addEventListener('click', () => {
+      console.log('Botão WhatsApp clicado');
+      document.getElementById('promoModal').style.display = 'block';  // Exibe o modal
+    });
+  }
+
+  // Botão TripAdvisor
+  const openTripadvisorPromoBtn = document.getElementById('openTripadvisorPromo');
+  console.log('openTripadvisorPromoBtn', openTripadvisorPromoBtn);  // Verificando se o botão está sendo encontrado
+  
+  if (openTripadvisorPromoBtn) {
+    openTripadvisorPromoBtn.addEventListener('click', () => {
+      console.log('Botão TripAdvisor clicado');
+      if (confirm('Deseja enviar pedido de feedback para clientes recentes?')) {
+        Admin.requestFeedback();
       }
-    };
+    });
+  }
+
+  // Botão Enviar Promoção
+  const sendPromoBtn = document.getElementById('sendPromoBtn');
+  console.log('sendPromoBtn', sendPromoBtn);  // Verificando se o botão está sendo encontrado
+  
+  if (sendPromoBtn) {
+    sendPromoBtn.addEventListener('click', () => {
+      console.log('Enviando promoção');
+      const message = document.getElementById('promoMessage').value;
+      if (!message) {
+        alert('Por favor, digite uma mensagem de promoção.');
+        return;
+      }
+
+      let filter = 'all';
+      if (document.getElementById('sendToPending').checked) {
+        filter = 'pending';
+      } else if (document.getElementById('sendToRecent').checked) {
+        filter = 'recent';
+      }
+
+      Admin.sendPromotion(message, filter);
+      document.getElementById('promoModal').style.display = 'none';  // Fecha o modal após enviar
+    });
+  }
+
+  // Fechar o modal
+  const closeModalBtn = document.getElementById('closeModalBtn');
+  console.log('closeModalBtn', closeModalBtn);  // Verificando se o botão está sendo encontrado
+
+  if (closeModalBtn) {
+    closeModalBtn.addEventListener('click', () => {
+      console.log('Fechando o modal');
+      document.getElementById('promoModal').style.display = 'none';  // Fecha o modal
+    });
+  }
+
+  // Cancelar e fechar o modal
+  const cancelModalBtn = document.getElementById('cancelModalBtn');
+  console.log('cancelModalBtn', cancelModalBtn);  // Verificando se o botão está sendo encontrado
+
+  if (cancelModalBtn) {
+    cancelModalBtn.addEventListener('click', () => {
+      console.log('Cancelando a promoção');
+      document.getElementById('promoModal').style.display = 'none';  // Fecha o modal
+    });
+  }
+
+  // Fechar o modal se clicar fora dele
+  window.addEventListener('click', (e) => {
+    if (e.target.id === 'promoModal') {
+      console.log('Clique fora do modal, fechando');
+      document.getElementById('promoModal').style.display = 'none';  // Fecha o modal
+    }
+  });
+}
+
+// Correção no processo de login
+const Admin = {
+  login: (username, password) => {
+    if (username === APP_CONFIG.adminCredentials.username && 
+        password === APP_CONFIG.adminCredentials.password) {
+      isAdminLoggedIn = true;
+      localStorage.setItem('adminLoggedIn', 'true');
+      
+      // Esconde o modal de login
+      if (DOM.adminLoginModal) {
+        DOM.adminLoginModal.hide();
+      }
+      
+      // Mostra o painel admin
+      DOM.adminPanel.classList.remove("d-none");
+      DOM.productSection.classList.add("d-none");
+      DOM.checkoutSection.classList.add("d-none");
+      DOM.cartIndicator.style.display = 'none';
+      DOM.adminAccessBtn.style.display = 'none';
+      
+      // Atualiza o painel de pedidos
+      Order.updateAdminPanel();
+      
+      Utils.showNotification('Login realizado com sucesso!', 'success');
+      return true;
+    } else {
+      Utils.showNotification('Usuário ou senha incorretos', 'danger');
+      return false;
+    }
+  },
+  
+  logout: () => {
+    isAdminLoggedIn = false;
+    localStorage.setItem('adminLoggedIn', 'false');
+    
+    DOM.adminPanel.classList.add("d-none");
+    DOM.productSection.classList.remove("d-none");
+    DOM.cartIndicator.style.display = 'flex';
+    DOM.adminAccessBtn.style.display = 'flex';
+    
+    Utils.showNotification('Logout realizado com sucesso', 'info');
+  },
+  
+  checkLoginStatus: () => {
+    if (isAdminLoggedIn) {
+      DOM.adminPanel.classList.remove("d-none");
+      DOM.productSection.classList.add("d-none");
+      DOM.checkoutSection.classList.add("d-none");
+      DOM.cartIndicator.style.display = 'none';
+      DOM.adminAccessBtn.style.display = 'none';
+      Order.updateAdminPanel();
+    }
+  },
+
+  sendPromotion: function() {
+    const message = this.promoMessageInput.value.trim();
+    if (!message) {
+      alert('Por favor, digite a mensagem de promoção');
+      return;
+    }
+    
+    // Pega o filtro selecionado (todos, pendentes ou recentes)
+    const filter = document.querySelector('input[name="sendTo"]:checked').value;
+    
+    // Chama a função sendPromotion do código original com os parâmetros corretos
+    this.sendPromotionToClients(message, filter);
+    
+    this.close();
+  },
+  
+  // Função para enviar a promoção aos clientes
+  sendPromotionToClients: function(message, filter) {
+    let clients = [];
+    const now = new Date();
+    
+    // Filtro de clientes
+    switch(filter) {
+      case 'all':
+        const thirtyDaysAgo = new Date(now.setDate(now.getDate() - 30));
+        clients = orders.filter(o => new Date(o.data) > thirtyDaysAgo);
+        break;
+        
+      case 'pending':
+        clients = orders.filter(o => o.status === 'pending');
+        break;
+        
+      case 'recent':
+        const sevenDaysAgo = new Date(now.setDate(now.getDate() - 7));
+        clients = orders.filter(o => new Date(o.data) > sevenDaysAgo);
+        break;
+    }
+    
+    // Remove duplicados mantendo o mais recente
+    const uniqueClients = [];
+    const phonesSent = new Set();
+    
+    clients
+      .sort((a, b) => new Date(b.data) - new Date(a.data))
+      .forEach(client => {
+        const phone = client.telefone.replace(/\D/g, '');
+        if (!phonesSent.has(phone)) {
+          phonesSent.add(phone);
+          uniqueClients.push(client);
+        }
+      });
+    
+    // Envia as mensagens
+    uniqueClients.forEach(client => {
+      const text = `Olá ${client.cliente}, ${message}`;
+      const url = `https://wa.me/${client.telefone.replace(/\D/g, '')}?text=${encodeURIComponent(text)}`;
+      window.open(url, '_blank');
+    });
+  }
+};
+// 2. Função para configurar eventos de interação com os botões
+function setupEventListeners() {
+  // Ao clicar no botão "Acessar Painel Admin"
+  document.getElementById('adminAccessBtn')?.addEventListener('click', () => {
+    const username = document.getElementById('adminUsername').value;
+    const password = document.getElementById('adminPassword').value;
+    Admin.login(username, password);
+  });
+
+  // Ao clicar no botão "Logout"
+  document.getElementById('adminLogoutBtn')?.addEventListener('click', () => {
+    Admin.logout();
+  });
+}
+
+// Inicializa a aplicação
+document.addEventListener('DOMContentLoaded', () => {
+  setupEventListeners();
+  Admin.checkLoginStatus();
+});
+
+
 
     // Funções para lidar com opções de produtos
    const ProductOptions = {
@@ -4756,50 +5187,51 @@ generateKitchenOrder: (orderId) => {
       <div class="max-selection" id="max-carnes">Escolha até 2 carnes ou apenas Maminha</div>
     </div>
     
-    <div class="option-section" id="carnes-section">
-      <div class="option-item">
-        <label>
-          <input type="checkbox" name="carnes" value="Coração de galinha" data-max="2">
-          Coração de galinha
-        </label>
-      </div>
-      <div class="option-item">
-        <label>
-          <input type="checkbox" name="carnes" value="Costelinha de porco" data-max="2">
-          Costelinha de porco
-        </label>
-      </div>
-      <div class="option-item">
-        <label>
-          <input type="checkbox" name="carnes" value="Filé de frango" data-max="2">
-          Filé de frango
-        </label>
-      </div>
-      <div class="option-item">
-        <label>
-          <input type="checkbox" name="carnes" value="Linguiça" data-max="2">
-          Linguiça
-        </label>
-      </div>
-      <div class="option-item">
-        <label>
-          <input type="checkbox" name="carnes" value="Maminha (Exclusiva +1€)" data-additional-price="1" data-exclusive>
-           Só Maminha <span class="additional-price">+€1,00</span>
-        </label>
-      </div>
-      <div class="option-item">
-        <label>
-          <input type="checkbox" name="carnes" value="Maminha">
-          Maminha (Combinada)
-        </label>
-      </div>
-      <div class="option-item">
-        <label>
-          <input type="checkbox" name="carnes" value="Torresmo" data-max="2">
-          Torresmo
-        </label>
-      </div>
-    </div>
+   <div class="option-section" id="carnes-section">
+  <div class="option-item">
+    <label>
+      <input type="checkbox" name="carnes" value="Coração de galinha" data-max="2" required>
+      Coração de galinha
+    </label>
+  </div>
+  <div class="option-item">
+    <label>
+      <input type="checkbox" name="carnes" value="Costelinha de porco" data-max="2">
+      Costelinha de porco
+    </label>
+  </div>
+  <div class="option-item">
+    <label>
+      <input type="checkbox" name="carnes" value="Filé de frango" data-max="2">
+      Filé de frango
+    </label>
+  </div>
+  <div class="option-item">
+    <label>
+      <input type="checkbox" name="carnes" value="Linguiça" data-max="2">
+      Linguiça
+    </label>
+  </div>
+  <div class="option-item">
+    <label>
+      <input type="checkbox" name="carnes" value="Maminha (Exclusiva +1€)" data-additional-price="1" data-exclusive>
+      Só Maminha <span class="additional-price">+€1,00</span>
+    </label>
+  </div>
+  <div class="option-item">
+    <label>
+      <input type="checkbox" name="carnes" value="Maminha">
+      Maminha
+    </label>
+  </div>
+  <div class="option-item">
+    <label>
+      <input type="checkbox" name="carnes" value="Torresmo" data-max="2">
+      Torresmo
+    </label>
+  </div>
+</div>
+
     
       <!-- Nova seção para ponto da carne -->
     <div class="option-section" id="ponto-carne-section">
@@ -5950,31 +6382,47 @@ if (productId === "101" || productId === "406" ) {
 DOM.productOptionsModal.show();
 },
 
-  handleOptionsConfirmation: () => {
-    // Validação de campos obrigatórios
-    const requiredSections = DOM.productOptionsContent.querySelectorAll('.option-section [required]');
-    let isValid = true;
-    
-    requiredSections.forEach(section => {
-      const sectionContainer = section.closest('.option-section');
-      if (sectionContainer.style.display !== 'none') {
-        const maxMessage = sectionContainer.querySelector('.max-selection');
-        
-        if (section.type === 'checkbox' || section.type === 'radio') {
-          const selected = sectionContainer.querySelector('input:checked');
-          if (!selected) {
-            maxMessage.style.display = 'block';
-            sectionContainer.classList.add('required-field');
-            isValid = false;
-          }
+handleOptionsConfirmation: () => {
+  const requiredSections = DOM.productOptionsContent.querySelectorAll('.option-section');
+  let isValid = true;
+
+  requiredSections.forEach(section => {
+    const isHidden = section.style.display === 'none';
+    if (isHidden) return;
+
+    const inputs = section.querySelectorAll('input[required]');
+    const maxMessage = section.querySelector('.max-selection');
+
+    if (inputs.length > 0) {
+      const type = inputs[0].type;
+
+      // Validação para radio buttons
+      if (type === 'radio') {
+        const anyChecked = Array.from(inputs).some(input => input.checked);
+        if (!anyChecked) {
+          if (maxMessage) maxMessage.style.display = 'block';
+          section.classList.add('required-field');
+          isValid = false;
         }
       }
-    });
-    
-    if (!isValid) {
-      Utils.showNotification('Por favor, selecione todas as opções obrigatórias', 'danger');
-      return;
+
+      // Validação para checkboxes (ex: carnes)
+      if (type === 'checkbox') {
+        const checkboxes = section.querySelectorAll('input[type="checkbox"]');
+        const anyChecked = Array.from(checkboxes).some(cb => cb.checked);
+        if (!anyChecked) {
+          if (maxMessage) maxMessage.style.display = 'block';
+          section.classList.add('required-field');
+          isValid = false;
+        }
+      }
     }
+  });
+
+  if (!isValid) {
+    Utils.showNotification('Por favor, selecione todas as opções obrigatórias', 'danger');
+    return;
+  }
     
     // Coletar todas as opções selecionadas
     const options = {};
@@ -6083,30 +6531,34 @@ function selectAllAçaiToppings() {
     // Event Listeners
     function setupEventListeners() {
     // Botão Adicionar ao Carrinho
-    document.addEventListener('click', (event) => {
-        if (event.target.closest('.add-to-cart')) {
-            const button = event.target.closest('.add-to-cart');
-            const productCard = button.closest('.product-card');
-            
-            if (productCard) {
-                const id = productCard.getAttribute("data-id");
-                const nameElement = productCard.querySelector(".product-name");
-                const priceElement = productCard.querySelector(".product-price");
-                const imageElement = productCard.querySelector(".product-image");
-                
-                if (nameElement && priceElement) {
-                    const name = nameElement.textContent;
-                    const price = Utils.parsePrice(priceElement.textContent);
-                    const image = imageElement?.src || '';
-                    
-                    if (productCard.getAttribute('data-has-options') === 'true') {
-                        ProductOptions.showOptions(id, name);
-                    } else {
-                        Cart.addItem(id, name, price, image);
-                    }
-                }
-            }
+ // Event Listeners - Adicionar ao Carrinho (versão corrigida)
+document.addEventListener('click', (event) => {
+    const addButton = event.target.closest('.add-to-cart');
+    if (!addButton) return;
+    
+    event.stopImmediatePropagation(); // Impede múltiplos eventos
+    event.preventDefault();
+
+    const productCard = addButton.closest('.product-card');
+    if (!productCard) return;
+
+    const id = productCard.getAttribute("data-id");
+    const nameElement = productCard.querySelector(".product-name");
+    const priceElement = productCard.querySelector(".product-price");
+    const imageElement = productCard.querySelector(".product-image");
+
+    if (nameElement && priceElement) {
+        const name = nameElement.textContent;
+        const price = Utils.parsePrice(priceElement.textContent);
+        const image = imageElement?.src || '';
+
+        if (productCard.getAttribute('data-has-options') === 'true') {
+            ProductOptions.showOptions(id, name);
+        } else {
+            Cart.addItem(id, name, price, image);
         }
+    }
+}, { once: false, capture: true }); // Configuração importante
           // Adicione na seção de funções do Carrinho
             clear: () => {
               cart = [];
@@ -6203,30 +6655,34 @@ document.querySelectorAll('.admin-order-card').forEach(card => {
     card.style.display = 'block';
 });
 
-        // Remover item do carrinho
-        if (event.target.closest('.remove-item')) {
-            const id = event.target.closest('.remove-item').getAttribute("data-id");
-            Cart.removeItem(id);
-        }
+const target = event.target;
 
-        // Aumentar quantidade
-        if (event.target.closest('.increase')) {
-            const id = event.target.closest('.increase').getAttribute("data-id");
-            const item = cart.find(item => item.id === id);
-            if (item) {
-                Cart.updateItemQuantity(id, item.quantity + 1);
-            }
-        }
+// Remover item do carrinho
+if (target instanceof Element && target.closest('.remove-item')) {
+    const id = target.closest('.remove-item').getAttribute("data-id");
+    Cart.removeItem(id);
+}
 
-        // Diminuir quantidade
-        if (event.target.closest('.decrease')) {
-            const id = event.target.closest('.decrease').getAttribute("data-id");
-            const item = cart.find(item => item.id === id);
-            if (item) {
-                Cart.updateItemQuantity(id, item.quantity - 1);
-            }
-        }
-    });
+// Aumentar quantidade
+if (target instanceof Element && target.closest('.increase')) {
+    const id = target.closest('.increase').getAttribute("data-id");
+    const item = cart.find(item => item.id === id);
+    if (item) {
+        Cart.updateItemQuantity(id, item.quantity + 1);
+    }
+}
+
+// Diminuir quantidade
+if (target instanceof Element && target.closest('.decrease')) {
+    const id = target.closest('.decrease').getAttribute("data-id");
+    const item = cart.find(item => item.id === id);
+    if (item) {
+        Cart.updateItemQuantity(id, item.quantity - 1);
+    }
+}
+
+
+    };
 
     // Botão Finalizar Pedido
     if (DOM.checkoutButton) {
@@ -6567,7 +7023,7 @@ if (DOM.printKitchenOrder) {
             }
         });
     }
-}
+
     
 document.addEventListener('DOMContentLoaded', function() {
     // Atualiza a disponibilidade dos produtos logo após o carregamento da página
@@ -6645,7 +7101,6 @@ document.addEventListener('DOMContentLoaded', function() {
   // Melhorar toques em botões
   document.addEventListener('touchstart', function() {}, {passive: true});
 });
-
 
   </script>
 </body>
